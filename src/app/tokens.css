@@ -7,7 +7,14 @@
    - @theme inline maps them to Tailwind namespaces, so utilities like
      bg-background, text-foreground, text-accent, text-hero01 just work and
      re-colour themselves when data-theme changes on <html>.
-   - Collection pages set data-theme; cart/checkout/account stay on "noir".
+   - A page picks its theme by rendering <PageTheme theme="…"/>, a hidden
+     marker [data-page-theme]. Before JavaScript loads, :root:has() applies
+     it from the server HTML, so the first paint is already right (no flash).
+     Once JS runs, ThemeSignal takes over (class .js-theme + data-theme on
+     <html>), because Next.js keeps hidden pages mounted and CSS alone would
+     see their markers too. The home page's Four Wardrobes scroll uses the
+     same registry.
+     Cart, checkout, account and admin stay on "noir".
    - Colours are registered with @property so they can tween during the
      collection-to-collection transition (no flash, ~900 ms).
    ========================================================================== */
@@ -26,6 +33,7 @@
 
 /* ---------- Base: Noir Atelier (home, shop all, cart, checkout, account) */
 :root,
+:root:not(.js-theme):has([data-page-theme="noir"]),
 [data-theme="noir"] {
   --k-bg: #0B0B0C;          /* Ink */
   --k-bg-2: #141416;        /* raised surfaces: cards */
@@ -47,6 +55,7 @@
 }
 
 /* ---------- 01 Streetwear — "Neon Night" */
+:root:not(.js-theme):has([data-page-theme="street"]),
 [data-theme="street"] {
   --k-bg: #0A0B10;
   --k-bg-2: #12141C;
@@ -68,6 +77,7 @@
 }
 
 /* ---------- 02 Formal — "Tailor's Atelier" */
+:root:not(.js-theme):has([data-page-theme="formal"]),
 [data-theme="formal"] {
   --k-bg: #121316;
   --k-bg-2: #191A1E;
@@ -89,6 +99,7 @@
 }
 
 /* ---------- 03 Old Money — "Heritage Library" (the light flip) */
+:root:not(.js-theme):has([data-page-theme="old-money"]),
 [data-theme="old-money"] {
   --k-bg: #F2EDE3;          /* Ivory */
   --k-bg-2: #FBF8F2;        /* Paper */
@@ -111,6 +122,7 @@
 }
 
 /* ---------- 04 Riding — "Night Highway" */
+:root:not(.js-theme):has([data-page-theme="riding"]),
 [data-theme="riding"] {
   --k-bg: #0D0F10;
   --k-bg-2: #151819;

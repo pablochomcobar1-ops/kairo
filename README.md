@@ -13,7 +13,7 @@ Designed and built by **Jainam Gondaliya**. Kairo is a concept brand; product im
 | 1 | Brief, positioning, site architecture | Done |
 | 2 | Visual direction (A: Noir Atelier) + design tokens | Done |
 | 3 | Build plan | Done |
-| 4 | Build | Tasks 0–1 done |
+| 4 | Build | Tasks 0–2 done |
 | 5 | Security hardening | Not started |
 | 6 | QA, SEO, accessibility, performance | Not started |
 | 7 | Launch on Vercel | Not started |

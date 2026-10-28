@@ -1,7 +1,14 @@
-import { ThemePreview } from "./ThemePreview";
+import { CollectionLink } from "@/components/layout/CollectionLink";
+
+const COLLECTIONS = [
+  ["streetwear", "Streetwear"],
+  ["formal", "Formal"],
+  ["old-money", "Old Money"],
+  ["riding", "Riding"],
+] as const;
 
 /**
- * Task 0 foundation check — not the real home page (that arrives in Task 6).
+ * Temporary check page — not the real home page (that arrives in Task 6).
  * Shows the fonts, the type scale and all five themes from design tokens.
  */
 export default function FoundationCheck() {
@@ -19,14 +26,24 @@ export default function FoundationCheck() {
   return (
     <main className="mx-auto flex max-w-site flex-col gap-16 px-gutter py-section">
       <header className="flex flex-col gap-6">
-        <p className="font-mono text-caption01 uppercase text-accent">Task 0 · Foundation check</p>
+        <p className="font-mono text-caption01 uppercase text-accent">Task 2 · Theme transitions</p>
         <h1 className="font-display text-hero01 font-bold uppercase">Four lives.<br />One label.</h1>
         <p className="max-w-prose text-body01 text-foreground-secondary">
-          If you can read this in Syncopate and Manrope on a near-black page, the tokens and fonts
-          are wired. Click the themes below: the whole page should fade to each collection&apos;s
-          colours in about a second.
+          Task 2 check: open a collection. The curtain should wipe in its colour with the name,
+          the page should change underneath, and the curtain should lift. Use the browser&apos;s back
+          button too: no curtain, but the colours must always match the page.
         </p>
-        <ThemePreview />
+        <nav aria-label="Collections" className="flex flex-wrap gap-3">
+          {COLLECTIONS.map(([slug, label]) => (
+            <CollectionLink
+              key={slug}
+              href={`/collections/${slug}`}
+              className="flex min-h-11 items-center border border-border-strong px-5 font-mono text-caption01 uppercase transition-colors hover:border-accent hover:text-accent"
+            >
+              {label}
+            </CollectionLink>
+          ))}
+        </nav>
       </header>
 
       <section aria-labelledby="scale" className="flex flex-col gap-6 border-t border-border pt-10">

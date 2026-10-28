@@ -174,13 +174,13 @@ html {
   --font-mono: var(--font-jetbrains), ui-monospace, monospace;
 
   /* Type scale — 01 = largest. Fluid between 375 px and 1440 px. */
-  --text-hero01: clamp(3rem, 1.6rem + 6vw, 6rem);            /* 48 → 96 */
+  --text-hero01: clamp(2.25rem, 0.75rem + 6.4vw, 6rem);      /* 36 → 96 */
   --text-hero01--line-height: 1.04;
   --text-hero01--letter-spacing: 0.04em;
-  --text-hero02: clamp(2.25rem, 1.3rem + 4vw, 4.5rem);       /* 36 → 72 */
+  --text-hero02: clamp(1.875rem, 0.95rem + 3.9vw, 4.5rem);   /* 30 → 72 */
   --text-hero02--line-height: 1.06;
   --text-hero02--letter-spacing: 0.05em;
-  --text-heading01: clamp(1.75rem, 1.2rem + 2.4vw, 2.75rem); /* 28 → 44 */
+  --text-heading01: clamp(1.5rem, 1.05rem + 1.9vw, 2.75rem); /* 24 → 44 */
   --text-heading01--line-height: 1.12;
   --text-heading02: clamp(1.375rem, 1.1rem + 1.1vw, 1.75rem);/* 22 → 28 */
   --text-heading02--line-height: 1.2;

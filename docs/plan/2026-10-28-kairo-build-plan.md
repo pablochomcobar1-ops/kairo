@@ -191,10 +191,10 @@ LCP under 2.5 s on a mid-range phone on 4G · CLS under 0.05 · INP under 200 ms
 
 ### Task 1: Database schema, RLS and seed
 
-**Files:** Create: `supabase/migrations/0001_schema.sql`, `0002_rls.sql`, `0003_functions.sql`, `supabase/seed.sql`, `src/server/supabase/{server.ts,admin.ts}`, `src/lib/supabase/browser.ts`, `src/types/db.ts` (generated)
+**Files:** Create: `supabase/migrations/2026102815xxxx_{schema,functions,rls,storage}.sql`, `supabase/seed/catalog.mjs` → `scripts/build-seed.mjs` → `supabase/seed.sql`, `src/server/supabase/{server.ts,admin.ts}`, `src/lib/supabase/browser.ts`, `src/lib/env.ts`, `src/server/env.ts`, `src/types/db.ts` (generated after linking), `tests/db/{harness.ts,database.test.ts}` (in-memory Postgres via PGlite)
 
 **Interfaces:**
-- Produces: tables in A3; SQL function `is_admin() returns boolean`; SQL function `mark_order_paid(p_order_id uuid, p_payment_id text) returns boolean` (true only the first time; decrements stock, increments coupon `used_count`, sets `payment_status='paid'`, `status='placed'`); `createServerClient()` (user session, RLS applies), `createAdminClient()` (service role, `server-only`).
+- Produces: tables in A3; SQL function `is_admin() returns boolean`; SQL function `mark_order_paid(p_order_id uuid, p_payment_id text) returns text` — `'paid'` the first time (decrements stock, increments coupon `used_count`, sets `payment_status='paid'`, `status='placed'`), `'already_paid'` on repeats, `'paid_out_of_stock'` when stock ran out (order cancelled, `payment_status='refund_due'`), `'not_found'`; SQL function `is_verified_buyer(user, product) returns boolean`; order status moves forward only (trigger) and every change is logged in `order_events`; `createServerClient()` (user session, RLS applies), `createAdminClient()` (service role, `server-only`).
 
 - [ ] **Step 1:** Write `tests/unit/rls.sql.test.ts` (runs against the Supabase local stack): anonymous select on unpublished product returns 0 rows; user A cannot select user B's order; non-admin update on `products` fails; anonymous insert on `orders` fails.
 - [ ] **Step 2:** Run it, expect FAIL (no schema).
@@ -303,7 +303,7 @@ LCP under 2.5 s on a mid-range phone on 4G · CLS under 0.05 · INP under 200 ms
 - [ ] **Step 1:** Pricing tests: one ₹2,999 item → shipping 14900; ₹3,000 → shipping 0; ₹3,200 with ₹500 discount → shipping 14900 (threshold is after discount).
 - [ ] **Step 2:** Coupon tests: `KAIRO10` on ₹1,999 → `min_subtotal`; on ₹5,000 → 50000 off; expired → `expired`; `used_count = max_uses` → `used_up`; percent discount never exceeds subtotal.
 - [ ] **Step 3:** Razorpay tests: a signature computed with the test secret verifies; a one-character change fails; signatures of different length fail without throwing.
-- [ ] **Step 4:** Checkout tests (Supabase local): **`createCheckout ignores client price`** (input carries `unitPaise: 1`, order total equals DB price); **`createCheckout rejects quantity above stock`** (stock 2, qty 3 → error "Only 2 left in size M"); **`mark_order_paid is idempotent`** (called twice → second returns false, stock dropped once, coupon used once).
+- [ ] **Step 4:** Checkout tests (Supabase local): **`createCheckout ignores client price`** (input carries `unitPaise: 1`, order total equals DB price); **`createCheckout rejects quantity above stock`** (stock 2, qty 3 → error "Only 2 left in size M"); **`mark_order_paid is idempotent`** (called twice → second returns `'already_paid'`, stock dropped once, coupon used once — already covered by the Task 1 database tests).
 - [ ] **Step 5:** Run all FAIL → implement → PASS.
 - [ ] **Step 6:** Webhook reads the raw body, verifies, handles `payment.captured` (→ `mark_order_paid`, send email) and `payment.failed` (→ `payment_status = 'failed'`), returns 200 for unknown events.
 - [ ] **Step 7:** Manual test with Razorpay test card and test UPI ID; order appears in admin. Commit "Task 9: checkout".

@@ -13,7 +13,7 @@ Designed and built by **Jainam Gondaliya**. Kairo is a concept brand; product im
 | 1 | Brief, positioning, site architecture | Done |
 | 2 | Visual direction (A: Noir Atelier) + design tokens | Done |
 | 3 | Build plan | Done |
-| 4 | Build | Task 0 done |
+| 4 | Build | Tasks 0–1 done |
 | 5 | Security hardening | Not started |
 | 6 | QA, SEO, accessibility, performance | Not started |
 | 7 | Launch on Vercel | Not started |
@@ -26,7 +26,12 @@ src/app/tokens.css            Locked Tailwind v4 tokens: base Noir + 4 collectio
 src/app/globals.css           Base styles, film grain
 src/lib/fonts.ts              Syncopate, Manrope, JetBrains Mono (next/font)
 src/lib/cn.ts                 Class merging that understands our type scale
+src/lib/env.ts, src/server/env.ts   Checked settings (public vs secret)
+src/server/supabase/          Supabase clients: as the visitor (RLS) and admin (server only)
+supabase/migrations/          Database schema, functions, Row Level Security, storage
+supabase/seed/catalog.mjs     The catalog: edit, then `npm run db:seed:build`
 tests/unit/                   Vitest tests
+tests/db/                     Database + RLS tests on an in-memory Postgres
 docs/brief.md                 The Stage 1 brief in short
 docs/plan/                    The build plan
 .agents/product-marketing.md  Positioning and brand voice (read by the copy tools)

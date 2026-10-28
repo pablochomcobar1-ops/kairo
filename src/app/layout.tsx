@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import { CurtainProvider } from "@/components/layout/Curtain";
+import { SmoothScroll } from "@/components/motion/SmoothScroll";
 import { fontVariables } from "@/lib/fonts";
 import "./globals.css";
 
@@ -23,7 +24,9 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html lang="en-IN" data-theme="noir" className={fontVariables}>
       <body className="grain bg-background text-foreground">
-        <CurtainProvider>{children}</CurtainProvider>
+        <SmoothScroll>
+          <CurtainProvider>{children}</CurtainProvider>
+        </SmoothScroll>
       </body>
     </html>
   );

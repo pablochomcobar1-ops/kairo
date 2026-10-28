@@ -26,7 +26,7 @@ export default function FoundationCheck() {
   return (
     <main className="mx-auto flex max-w-site flex-col gap-16 px-gutter py-section">
       <header className="flex flex-col gap-6">
-        <p className="font-mono text-caption01 uppercase text-accent">Task 2 · Theme transitions</p>
+        <p className="font-mono text-caption01 uppercase text-accent">Work in progress · Task 3</p>
         <h1 className="font-display text-hero01 font-bold uppercase">Four lives.<br />One label.</h1>
         <p className="max-w-prose text-body01 text-foreground-secondary">
           Task 2 check: open a collection. The curtain should wipe in its colour with the name,
@@ -44,6 +44,9 @@ export default function FoundationCheck() {
             </CollectionLink>
           ))}
         </nav>
+        <a href="/styleguide" className="self-start font-mono text-caption01 uppercase text-accent underline-offset-4 hover:underline">
+          Open the design system →
+        </a>
       </header>
 
       <section aria-labelledby="scale" className="flex flex-col gap-6 border-t border-border pt-10">

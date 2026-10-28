@@ -13,7 +13,7 @@ Designed and built by **Jainam Gondaliya**. Kairo is a concept brand; product im
 | 1 | Brief, positioning, site architecture | Done |
 | 2 | Visual direction (A: Noir Atelier) + design tokens | Done |
 | 3 | Build plan | Done |
-| 4 | Build | Tasks 0–2 done |
+| 4 | Build | Tasks 0–3 done |
 | 5 | Security hardening | Not started |
 | 6 | QA, SEO, accessibility, performance | Not started |
 | 7 | Launch on Vercel | Not started |
@@ -30,6 +30,9 @@ src/lib/env.ts, src/server/env.ts   Checked settings (public vs secret)
 src/server/supabase/          Supabase clients: as the visitor (RLS) and admin (server only)
 supabase/migrations/          Database schema, functions, Row Level Security, storage
 supabase/seed/catalog.mjs     The catalog: edit, then `npm run db:seed:build`
+src/components/ui/            Buttons, fields, dialogs, drawers, prices, badges, icons
+src/components/motion/        Reveal, SplitText, MagneticButton, SmoothScroll (Lenis + GSAP)
+src/app/styleguide/           Every building block on one page (hidden from Google)
 tests/unit/                   Vitest tests
 tests/db/                     Database + RLS tests on an in-memory Postgres
 docs/brief.md                 The Stage 1 brief in short

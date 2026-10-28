@@ -219,16 +219,53 @@ html {
   --radius-none: 0px;
   --radius-pill: 9999px;
 
-  /* Motion */
+  /* Buttons: one size, tracked caps */
+  --text-button: 0.8125rem;                                   /* 13 */
+  --text-button--line-height: 1;
+  --text-button--letter-spacing: 0.14em;
+
+  /* Motion
+     ui     strong ease-out for anything the user triggers (buttons, menus)
+     drawer iOS-like curve for sheets and drawers
+     expo   long, cinematic reveals (headlines, images)
+     cine   on-screen movement (curtain, carousels) */
+  --ease-ui: cubic-bezier(0.23, 1, 0.32, 1);
+  --ease-drawer: cubic-bezier(0.32, 0.72, 0, 1);
   --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
   --ease-in-out-cine: cubic-bezier(0.65, 0, 0.35, 1);
   --animate-marquee: marquee 40s linear infinite;
+  --animate-overlay-in: overlay-in 200ms var(--ease-ui);
+  --animate-overlay-out: overlay-out 150ms var(--ease-ui);
+  --animate-dialog-in: dialog-in 220ms var(--ease-ui);
+  --animate-dialog-out: dialog-out 150ms var(--ease-ui);
+  --animate-drawer-right-in: drawer-right-in 340ms var(--ease-drawer);
+  --animate-drawer-right-out: drawer-right-out 220ms var(--ease-drawer);
+  --animate-drawer-left-in: drawer-left-in 340ms var(--ease-drawer);
+  --animate-drawer-left-out: drawer-left-out 220ms var(--ease-drawer);
+  --animate-drawer-bottom-in: drawer-bottom-in 340ms var(--ease-drawer);
+  --animate-drawer-bottom-out: drawer-bottom-out 220ms var(--ease-drawer);
+  --animate-accordion-down: accordion-down 260ms var(--ease-ui);
+  --animate-accordion-up: accordion-up 200ms var(--ease-ui);
 }
 
 @keyframes marquee {
   from { transform: translateX(0); }
   to   { transform: translateX(-50%); }
 }
+
+/* Enter/exit for overlays. Exits are faster than entries. */
+@keyframes overlay-in   { from { opacity: 0; } to { opacity: 1; } }
+@keyframes overlay-out  { from { opacity: 1; } to { opacity: 0; } }
+@keyframes dialog-in    { from { opacity: 0; transform: translate(-50%, -48%) scale(0.96); } to { opacity: 1; transform: translate(-50%, -50%) scale(1); } }
+@keyframes dialog-out   { from { opacity: 1; transform: translate(-50%, -50%) scale(1); } to { opacity: 0; transform: translate(-50%, -50%) scale(0.97); } }
+@keyframes drawer-right-in   { from { transform: translateX(100%); } to { transform: translateX(0); } }
+@keyframes drawer-right-out  { from { transform: translateX(0); } to { transform: translateX(100%); } }
+@keyframes drawer-left-in    { from { transform: translateX(-100%); } to { transform: translateX(0); } }
+@keyframes drawer-left-out   { from { transform: translateX(0); } to { transform: translateX(-100%); } }
+@keyframes drawer-bottom-in  { from { transform: translateY(100%); } to { transform: translateY(0); } }
+@keyframes drawer-bottom-out { from { transform: translateY(0); } to { transform: translateY(100%); } }
+@keyframes accordion-down { from { height: 0; } to { height: var(--radix-accordion-content-height); } }
+@keyframes accordion-up   { from { height: var(--radix-accordion-content-height); } to { height: 0; } }
 
 /* Touch targets and focus, every theme */
 :where(a, button, input, select, textarea, [tabindex]):focus-visible {

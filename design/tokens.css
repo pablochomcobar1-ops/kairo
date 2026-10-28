@@ -1,0 +1,225 @@
+/* ==========================================================================
+   KAIRO design tokens — Direction A "Noir Atelier" + four collection themes
+   Locked: 2026-10-28 (Stage 2). Tailwind CSS v4.
+   --------------------------------------------------------------------------
+   How it works
+   - Raw theme values live on :root and [data-theme="…"] as --k-* variables.
+   - @theme inline maps them to Tailwind namespaces, so utilities like
+     bg-background, text-foreground, text-accent, text-hero01 just work and
+     re-colour themselves when data-theme changes on <html>.
+   - Collection pages set data-theme; cart/checkout/account stay on "noir".
+   - Colours are registered with @property so they can tween during the
+     collection-to-collection transition (no flash, ~900 ms).
+   ========================================================================== */
+
+@property --k-bg        { syntax: "<color>"; inherits: true; initial-value: #0B0B0C; }
+@property --k-bg-2      { syntax: "<color>"; inherits: true; initial-value: #141416; }
+@property --k-bg-3      { syntax: "<color>"; inherits: true; initial-value: #1A1A1C; }
+@property --k-fg        { syntax: "<color>"; inherits: true; initial-value: #ECE6DA; }
+@property --k-fg-2      { syntax: "<color>"; inherits: true; initial-value: #A39D93; }
+@property --k-fg-3      { syntax: "<color>"; inherits: true; initial-value: #8C877E; }
+@property --k-border    { syntax: "<color>"; inherits: true; initial-value: #22211F; }
+@property --k-border-2  { syntax: "<color>"; inherits: true; initial-value: #3A3833; }
+@property --k-accent    { syntax: "<color>"; inherits: true; initial-value: #C9A66B; }
+@property --k-accent-fg { syntax: "<color>"; inherits: true; initial-value: #0B0B0C; }
+@property --k-glow      { syntax: "<color>"; inherits: true; initial-value: #3A332A; }
+
+/* ---------- Base: Noir Atelier (home, shop all, cart, checkout, account) */
+:root,
+[data-theme="noir"] {
+  --k-bg: #0B0B0C;          /* Ink */
+  --k-bg-2: #141416;        /* raised surfaces: cards */
+  --k-bg-3: #1A1A1C;        /* Graphite: drawers, menus */
+  --k-fg: #ECE6DA;          /* Bone */
+  --k-fg-2: #A39D93;        /* secondary text  (7.4:1 on bg) */
+  --k-fg-3: #8C877E;        /* Ash: labels     (5.4:1 on bg) */
+  --k-border: #22211F;
+  --k-border-2: #3A3833;
+  --k-accent: #C9A66B;      /* Brass */
+  --k-accent-fg: #0B0B0C;   /* text on accent */
+  --k-glow: #3A332A;        /* background glow tint */
+  --k-grain-opacity: 0.06;
+  --k-grain: "film";
+  --k-silk-light: #C9A66B;  /* WebGL rim light colour */
+  --k-dur-reveal: 900ms;
+  --k-stagger: 90ms;
+  color-scheme: dark;
+}
+
+/* ---------- 01 Streetwear — "Neon Night" */
+[data-theme="street"] {
+  --k-bg: #0A0B10;
+  --k-bg-2: #12141C;
+  --k-bg-3: #191C27;
+  --k-fg: #EEF0F7;
+  --k-fg-2: #AEB3C4;
+  --k-fg-3: #8A8FA3;        /* 5.9:1 */
+  --k-border: #1E2130;
+  --k-border-2: #343A52;
+  --k-accent: #9B87F5;      /* Electric violet, 6.5:1 */
+  --k-accent-fg: #0A0B10;
+  --k-glow: #2A2357;
+  --k-grain-opacity: 0.08;
+  --k-grain: "rain";
+  --k-silk-light: #9B87F5;
+  --k-dur-reveal: 500ms;
+  --k-stagger: 50ms;
+  color-scheme: dark;
+}
+
+/* ---------- 02 Formal — "Tailor's Atelier" */
+[data-theme="formal"] {
+  --k-bg: #121316;
+  --k-bg-2: #191A1E;
+  --k-bg-3: #202227;
+  --k-fg: #EDEEF0;
+  --k-fg-2: #AEB2B9;
+  --k-fg-3: #8E939C;        /* 5.7:1 */
+  --k-border: #26282E;
+  --k-border-2: #3C3F47;
+  --k-accent: #B8C0CC;      /* Steel silver */
+  --k-accent-fg: #121316;
+  --k-glow: #2B3038;
+  --k-grain-opacity: 0.05;
+  --k-grain: "pinstripe";
+  --k-silk-light: #DDE3EC;
+  --k-dur-reveal: 700ms;
+  --k-stagger: 70ms;
+  color-scheme: dark;
+}
+
+/* ---------- 03 Old Money — "Heritage Library" (the light flip) */
+[data-theme="old-money"] {
+  --k-bg: #F2EDE3;          /* Ivory */
+  --k-bg-2: #FBF8F2;        /* Paper */
+  --k-bg-3: #E9E2D5;
+  --k-fg: #16130F;          /* Ink, 16:1 */
+  --k-fg-2: #3A352E;
+  --k-fg-3: #6B645A;        /* Stone, 4.9:1 */
+  --k-border: #DDD5C7;
+  --k-border-2: #C7BCA9;
+  --k-accent: #7A5C28;      /* Deep brass, 5.2:1 for text */
+  --k-accent-fg: #FBF8F2;
+  --k-accent-2: #2F4A3A;    /* Bottle green, secondary */
+  --k-glow: #E2D6BF;
+  --k-grain-opacity: 0.05;
+  --k-grain: "linen";
+  --k-silk-light: #F5E6C8;
+  --k-dur-reveal: 1100ms;
+  --k-stagger: 120ms;
+  color-scheme: light;
+}
+
+/* ---------- 04 Riding — "Night Highway" */
+[data-theme="riding"] {
+  --k-bg: #0D0F10;
+  --k-bg-2: #151819;
+  --k-bg-3: #1C2022;
+  --k-fg: #EFEDEA;
+  --k-fg-2: #B0ABA4;
+  --k-fg-3: #8F8A83;        /* 5.6:1 */
+  --k-border: #24282A;
+  --k-border-2: #3B4144;
+  --k-accent: #E8833A;      /* Streetlight orange, 7:1 */
+  --k-accent-fg: #0D0F10;
+  --k-glow: #3A2414;
+  --k-grain-opacity: 0.09;
+  --k-grain: "road";
+  --k-silk-light: #E8833A;
+  --k-dur-reveal: 450ms;
+  --k-stagger: 40ms;
+  color-scheme: dark;
+}
+
+/* Theme change = colours tween; skipped under reduced motion */
+html {
+  transition:
+    --k-bg 900ms cubic-bezier(0.65, 0, 0.35, 1),
+    --k-bg-2 900ms cubic-bezier(0.65, 0, 0.35, 1),
+    --k-bg-3 900ms cubic-bezier(0.65, 0, 0.35, 1),
+    --k-fg 900ms cubic-bezier(0.65, 0, 0.35, 1),
+    --k-fg-2 900ms cubic-bezier(0.65, 0, 0.35, 1),
+    --k-fg-3 900ms cubic-bezier(0.65, 0, 0.35, 1),
+    --k-border 900ms cubic-bezier(0.65, 0, 0.35, 1),
+    --k-border-2 900ms cubic-bezier(0.65, 0, 0.35, 1),
+    --k-accent 900ms cubic-bezier(0.65, 0, 0.35, 1),
+    --k-accent-fg 900ms cubic-bezier(0.65, 0, 0.35, 1),
+    --k-glow 900ms cubic-bezier(0.65, 0, 0.35, 1);
+}
+@media (prefers-reduced-motion: reduce) {
+  html { transition: none; }
+}
+
+/* ---------- Tailwind v4 mapping ---------- */
+@theme inline {
+  /* Colours (semantic only, no component tokens) */
+  --color-background: var(--k-bg);
+  --color-background-secondary: var(--k-bg-2);
+  --color-background-tertiary: var(--k-bg-3);
+  --color-foreground: var(--k-fg);
+  --color-foreground-secondary: var(--k-fg-2);
+  --color-foreground-subtle: var(--k-fg-3);
+  --color-border: var(--k-border);
+  --color-border-strong: var(--k-border-2);
+  --color-accent: var(--k-accent);
+  --color-accent-foreground: var(--k-accent-fg);
+  --color-focus-ring: var(--k-accent);
+  --color-success: #4ADE80;
+  --color-warning: #F5B54A;
+  --color-error: #F87171;
+
+  /* Fonts (loaded with next/font, exposed as CSS variables) */
+  --font-display: var(--font-syncopate), "Arial Black", sans-serif;
+  --font-sans: var(--font-manrope), system-ui, sans-serif;
+  --font-mono: var(--font-jetbrains), ui-monospace, monospace;
+
+  /* Type scale — 01 = largest. Fluid between 375 px and 1440 px. */
+  --text-hero01: clamp(3rem, 1.6rem + 6vw, 6rem);            /* 48 → 96 */
+  --text-hero01--line-height: 1.04;
+  --text-hero01--letter-spacing: 0.04em;
+  --text-hero02: clamp(2.25rem, 1.3rem + 4vw, 4.5rem);       /* 36 → 72 */
+  --text-hero02--line-height: 1.06;
+  --text-hero02--letter-spacing: 0.05em;
+  --text-heading01: clamp(1.75rem, 1.2rem + 2.4vw, 2.75rem); /* 28 → 44 */
+  --text-heading01--line-height: 1.12;
+  --text-heading02: clamp(1.375rem, 1.1rem + 1.1vw, 1.75rem);/* 22 → 28 */
+  --text-heading02--line-height: 1.2;
+  --text-heading03: 1.125rem;                                 /* 18 */
+  --text-heading03--line-height: 1.35;
+  --text-body01: 1.0625rem;                                   /* 17 */
+  --text-body01--line-height: 1.65;
+  --text-body02: 0.9375rem;                                   /* 15 */
+  --text-body02--line-height: 1.6;
+  --text-caption01: 0.75rem;                                  /* 12, mono labels */
+  --text-caption01--line-height: 1.4;
+  --text-caption01--letter-spacing: 0.24em;
+  --text-caption02: 0.6875rem;                                /* 11 */
+  --text-caption02--line-height: 1.4;
+  --text-caption02--letter-spacing: 0.2em;
+
+  /* Spacing: Tailwind's 4 px base stays; named layout rhythm on top */
+  --spacing-gutter: clamp(1.5rem, 0.6rem + 3.6vw, 3.5rem);   /* 24 → 56 side padding */
+  --spacing-section: clamp(4.5rem, 2.8rem + 7vw, 8.75rem);   /* 72 → 140 between sections */
+  --container-site: 90rem;                                    /* 1440 max width */
+  --container-prose: 40rem;
+
+  /* Shape: sharp luxury — no rounding except pills/avatars */
+  --radius-none: 0px;
+  --radius-pill: 9999px;
+
+  /* Motion */
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-in-out-cine: cubic-bezier(0.65, 0, 0.35, 1);
+  --animate-marquee: marquee 40s linear infinite;
+}
+
+@keyframes marquee {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
+}
+
+/* Touch targets and focus, every theme */
+:where(a, button, input, select, textarea, [tabindex]):focus-visible {
+  outline: 2px solid var(--k-accent);
+  outline-offset: 3px;
+}

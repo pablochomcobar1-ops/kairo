@@ -254,6 +254,13 @@ LCP under 2.5 s on a mid-range phone on 4G · CLS under 0.05 · INP under 200 ms
 - [ ] **Step 4:** Budget check in browser: 60 fps on desktop, DPR ≤ 1.5, < 120 draw calls per room, canvas paused when hidden.
 - [ ] **Step 5:** Commit "Task 5: 3D".
 
+**As built (2026-10-29), changes from the plan above:**
+- One canvas per 3D section (hero silk, Four Wardrobes), each loaded lazily after the page is interactive, instead of one site-wide canvas. Theme changes still relight both live (`kairo:theme` event + uniform tweening).
+- Rooms use unlit materials with gradient and glow textures drawn in code ("baked" lighting), so there are no model or texture downloads; KTX2 is not needed until real product photos arrive (Task 13).
+- Draw calls measured per room (including the neighbour seen through the doorway): 76 / 114 / 78 / 18. Only the current room and its neighbours are drawn.
+- 3D journey needs ≥ 768 px wide, WebGL, no reduced motion, no data saver, and (where the browser reports them) ≥ 4 CPU cores and ≥ 4 GB memory; otherwise the 2.5D version. Silk runs on phones as a lighter mesh; still image without WebGL, under reduced motion or data saver.
+- GSAP + ScrollTrigger load only with the 3D journey; Lenis runs on its own. The bag validates saved data with plain checks instead of Zod. Home page JS before load: 237 KB (target < 250 KB).
+
 ### Task 6: Home page sections
 
 **Files:** Create: `src/app/(store)/page.tsx`, `src/components/home/{Hero,BrandMarquee,WardrobesSection,DropTeaser,Countdown,NewInCarousel,CompleteTheLookHero,StorySection,ReviewsStrip,DropAlertForm}.tsx`, `tests/unit/countdown.test.ts`

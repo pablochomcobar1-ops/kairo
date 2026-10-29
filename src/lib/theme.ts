@@ -49,3 +49,23 @@ export function themeForPath(pathname: string, productCollectionSlug?: string): 
   if (section === "products") return themeForCollection(productCollectionSlug);
   return "noir";
 }
+
+/**
+ * How the silk is lit in each theme (linear-light colours are derived in the shader).
+ * fold = how fast the folds move; sheen = how glossy the highlight is.
+ */
+export interface SilkLook {
+  base: string;
+  shadow: string;
+  light: string;
+  sheen: number;
+  fold: number;
+}
+
+export const SILK: Record<ThemeName, SilkLook> = {
+  noir: { base: "#2B2825", shadow: "#070707", light: "#C9A66B", sheen: 0.9, fold: 1 },
+  street: { base: "#22213A", shadow: "#06070B", light: "#9B87F5", sheen: 1.15, fold: 1.3 },
+  formal: { base: "#2C3036", shadow: "#0C0D0F", light: "#DDE3EC", sheen: 0.75, fold: 0.8 },
+  "old-money": { base: "#EFE6D6", shadow: "#A89A80", light: "#FFF4DE", sheen: 0.45, fold: 0.6 },
+  riding: { base: "#2B2420", shadow: "#08090A", light: "#E8833A", sheen: 1.2, fold: 1.6 },
+};

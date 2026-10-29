@@ -1,13 +1,9 @@
 "use client";
 
-import { gsap } from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
 import Lenis from "lenis";
 import "lenis/dist/lenis.css";
 import { usePathname } from "next/navigation";
 import { createContext, useContext, useEffect, useState, type ReactNode } from "react";
-
-gsap.registerPlugin(ScrollTrigger);
 
 const LenisContext = createContext<Lenis | null>(null);
 
@@ -17,10 +13,10 @@ export function useLenis() {
 }
 
 /**
- * Smooth, weighted scrolling (Lenis) driven by GSAP's ticker, so scroll-linked
- * animations (ScrollTrigger) and the scroll itself share one clock and never
- * drift. Native scrolling under reduced motion and on touch (phones keep their
- * own physics, which people expect).
+ * Smooth, weighted scrolling (Lenis). Native scrolling under reduced motion and
+ * on touch (phones keep their own physics, which people expect). GSAP is not
+ * loaded here: the one feature that needs ScrollTrigger (the 3D journey) loads
+ * it itself and hooks into this Lenis instance, so ordinary pages stay light.
  */
 export function SmoothScroll({ children }: { children: ReactNode }) {
   const [lenis, setLenis] = useState<Lenis | null>(null);
@@ -30,17 +26,12 @@ export function SmoothScroll({ children }: { children: ReactNode }) {
     const reduce = window.matchMedia("(prefers-reduced-motion: reduce)");
     if (reduce.matches) return;
 
-    const instance = new Lenis({ lerp: 0.1, wheelMultiplier: 0.9, syncTouch: false });
-    instance.on("scroll", ScrollTrigger.update);
-    const tick = (time: number) => instance.raf(time * 1000);
-    gsap.ticker.add(tick);
-    gsap.ticker.lagSmoothing(0);
+    const instance = new Lenis({ lerp: 0.1, wheelMultiplier: 0.9, syncTouch: false, autoRaf: true });
     // publish on the next frame so this effect only subscribes, never re-renders synchronously
     const raf = requestAnimationFrame(() => setLenis(instance));
 
     return () => {
       cancelAnimationFrame(raf);
-      gsap.ticker.remove(tick);
       instance.destroy();
       setLenis(null);
     };
@@ -50,7 +41,6 @@ export function SmoothScroll({ children }: { children: ReactNode }) {
   useEffect(() => {
     if (!lenis) return;
     lenis.resize();
-    ScrollTrigger.refresh();
   }, [lenis, pathname]);
 
   return <LenisContext.Provider value={lenis}>{children}</LenisContext.Provider>;

@@ -1,6 +1,5 @@
 "use client";
 
-import { z } from "zod";
 import { create } from "zustand";
 import { createJSONStorage, persist } from "zustand/middleware";
 import { clampQty } from "@/lib/pricing";
@@ -11,18 +10,37 @@ import { clampQty } from "@/lib/pricing";
  * checkout the server ignores it and charges the database price (Task 9).
  */
 
-const lineSchema = z.object({
-  variantId: z.string().min(1).max(64),
-  productSlug: z.string().min(1).max(120),
-  name: z.string().min(1).max(120),
-  size: z.string().min(1).max(8),
-  colour: z.string().min(1).max(40),
-  image: z.string().max(300).nullable(),
-  unitPaise: z.number().int().positive(),
-  qty: z.number().int().min(1).max(5),
-});
+export interface CartLine {
+  variantId: string;
+  productSlug: string;
+  name: string;
+  size: string;
+  colour: string;
+  image: string | null;
+  unitPaise: number;
+  qty: number;
+}
 
-export type CartLine = z.infer<typeof lineSchema>;
+const text = (v: unknown, max: number) => typeof v === "string" && v.length >= 1 && v.length <= max;
+
+/** Whatever is in storage was written by a browser; check it before trusting it. (Plain checks: keeps a validation library out of every page.) */
+export function isCartLine(v: unknown): v is CartLine {
+  if (!v || typeof v !== "object") return false;
+  const l = v as Record<string, unknown>;
+  return (
+    text(l.variantId, 64) &&
+    text(l.productSlug, 120) &&
+    text(l.name, 120) &&
+    text(l.size, 8) &&
+    text(l.colour, 40) &&
+    (l.image === null || (typeof l.image === "string" && l.image.length <= 300)) &&
+    Number.isInteger(l.unitPaise) &&
+    (l.unitPaise as number) > 0 &&
+    Number.isInteger(l.qty) &&
+    (l.qty as number) >= 1 &&
+    (l.qty as number) <= 5
+  );
+}
 
 interface CartState {
   lines: CartLine[];
@@ -63,10 +81,10 @@ export const useCart = create<CartState>()(
       // Read on the client after first paint (CartHydrator), so server HTML and
       // the first client render agree and React doesn't warn.
       skipHydration: true,
-      // Whatever is in storage was written by a browser; check it before trusting it.
       merge: (persisted, current) => {
-        const parsed = z.object({ lines: z.array(lineSchema).max(50) }).safeParse(persisted);
-        return { ...current, lines: parsed.success ? parsed.data.lines : [] };
+        const lines = (persisted as { lines?: unknown } | undefined)?.lines;
+        const ok = Array.isArray(lines) && lines.length <= 50 && lines.every(isCartLine);
+        return { ...current, lines: ok ? (lines as CartLine[]) : [] };
       },
     },
   ),

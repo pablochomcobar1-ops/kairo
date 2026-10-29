@@ -243,6 +243,8 @@ html {
   --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
   --ease-in-out-cine: cubic-bezier(0.65, 0, 0.35, 1);
   --animate-marquee: marquee 40s linear infinite;
+  --animate-drift: marquee 90s linear infinite;
+  --animate-pulse-once: pulse-once 1.2s var(--ease-ui) 0.8s 1 both;
   --animate-overlay-in: overlay-in 200ms var(--ease-ui);
   --animate-overlay-out: overlay-out 150ms var(--ease-ui);
   --animate-dialog-in: dialog-in 220ms var(--ease-ui);
@@ -260,6 +262,12 @@ html {
 @keyframes marquee {
   from { transform: translateX(0); }
   to   { transform: translateX(-50%); }
+}
+
+/* Low-stock badges: one pulse when they appear, never a loop */
+@keyframes pulse-once {
+  0%   { box-shadow: 0 0 0 0 color-mix(in oklab, var(--k-accent) 60%, transparent); }
+  100% { box-shadow: 0 0 0 10px transparent; }
 }
 
 /* Enter/exit for overlays. Exits are faster than entries. */

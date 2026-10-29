@@ -1,4 +1,5 @@
 import { notFound } from "next/navigation";
+import { Suspense } from "react";
 import { CollectionLink } from "@/components/layout/CollectionLink";
 import { PageTheme } from "@/components/layout/PageTheme";
 import { COLLECTIONS, collectionBySlug } from "@/lib/collections";
@@ -12,7 +13,16 @@ export function generateStaticParams() {
   return COLLECTIONS.map((c) => ({ slug: c.slug }));
 }
 
-export default async function CollectionStub({ params }: PageProps<"/collections/[slug]">) {
+// Reading the URL happens inside <Suspense> so moving between collections stays instant.
+export default function CollectionPage({ params }: PageProps<"/collections/[slug]">) {
+  return (
+    <Suspense fallback={<div className="min-h-[80svh]" />}>
+      <CollectionStub params={params} />
+    </Suspense>
+  );
+}
+
+async function CollectionStub({ params }: { params: PageProps<"/collections/[slug]">["params"] }) {
   const { slug } = await params;
   const collection = collectionBySlug(slug);
   if (!collection) notFound();

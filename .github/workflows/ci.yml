@@ -12,6 +12,9 @@ jobs:
   check:
     runs-on: ubuntu-latest
     timeout-minutes: 15
+    env:
+      # GitHub has no Supabase keys, so checks read the catalog file instead (see src/server/catalog)
+      KAIRO_DATA: fixtures
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4

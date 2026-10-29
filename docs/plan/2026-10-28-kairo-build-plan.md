@@ -265,6 +265,8 @@ LCP under 2.5 s on a mid-range phone on 4G · CLS under 0.05 · INP under 200 ms
 
 **Files:** Create: `src/app/(store)/page.tsx`, `src/components/home/{Hero,BrandMarquee,WardrobesSection,DropTeaser,Countdown,NewInCarousel,CompleteTheLookHero,StorySection,ReviewsStrip,DropAlertForm}.tsx`, `tests/unit/countdown.test.ts`
 
+**As built (2026-10-29):** catalog reads live in `src/server/catalog/` (one `getHomeData()`, cached for an hour with tag `catalog`, from Supabase or from the catalog file when `KAIRO_DATA=fixtures`). Complete the Look is a flat-lay of garment drawings with hotspots until the photo shoot. The drop-alert Server Action exists now (Task 11 listed it); its rate limit and Turnstile arrive with Task 8. Product links point at `/products/…`, which Task 7 builds.
+
 **Interfaces:**
 - Consumes: Tasks 3–5; `getHomeData()` from `src/server/queries/home.ts` returning `{ newIn: ProductCard[], drop: Drop | null, look: Look, reviews: ReviewSnippet[] }`.
 - Produces: `timeLeft(target: Date, now: Date): { days, hours, minutes, seconds, done: boolean }`.

@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import { CurtainProvider } from "@/components/layout/Curtain";
+import { INTRO_SCRIPT, Loader } from "@/components/layout/Loader";
 import { SmoothScroll } from "@/components/motion/SmoothScroll";
 import { fontVariables } from "@/lib/fonts";
 import "./globals.css";
@@ -22,8 +23,13 @@ export const viewport: Viewport = {
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
-    <html lang="en-IN" data-theme="noir" className={fontVariables}>
+    // suppressHydrationWarning: the intro script and theme registry adjust <html> before React loads
+    <html lang="en-IN" data-theme="noir" className={fontVariables} suppressHydrationWarning>
+      <head>
+        <script dangerouslySetInnerHTML={{ __html: INTRO_SCRIPT }} />
+      </head>
       <body className="grain bg-background text-foreground">
+        <Loader />
         <SmoothScroll>
           <CurtainProvider>{children}</CurtainProvider>
         </SmoothScroll>

@@ -25,3 +25,15 @@ describe("SplitText", () => {
     expect(heading).toHaveAccessibleName("Four lives. One label.");
   });
 });
+
+describe("Reveal under reduced motion", () => {
+  it("always animates the position back to zero, even when the server drew it lowered", async () => {
+    const { Reveal } = await import("@/components/motion/Reveal");
+    const { readFileSync } = await import("node:fs");
+    // whileInView must carry the transform target, or reduced-motion visitors get stuck offset
+    const src = readFileSync("src/components/motion/Reveal.tsx", "utf8");
+    expect(src).toMatch(/whileInView=\{\{ opacity: 1, transform: "translateY\(0px\)" \}\}/);
+    render(<Reveal>hello</Reveal>);
+    expect(screen.getByText("hello")).toBeInTheDocument();
+  });
+});

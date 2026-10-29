@@ -69,3 +69,42 @@
     mix-blend-mode: overlay;
   }
 }
+
+/* ---------- First-visit intro (see components/layout/Loader.tsx) ---------- */
+@layer components {
+  .intro {
+    position: fixed;
+    inset: 0;
+    z-index: 200;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 1.75rem;
+    background-color: var(--k-bg);
+    color: var(--k-fg);
+    pointer-events: none;
+    animation: intro-lift 700ms var(--ease-in-out-cine) 1500ms both;
+  }
+  .intro .mono-ring,
+  .intro .mono-k {
+    stroke-dasharray: 1;
+    stroke-dashoffset: 1;
+    animation: intro-draw 800ms var(--ease-out-expo) both;
+  }
+  .intro .mono-ring-2 { animation-delay: 120ms; }
+  .intro .mono-k { animation-duration: 650ms; animation-delay: 450ms; }
+  .intro-word { animation: intro-word 700ms var(--ease-out-expo) 800ms both; }
+
+  .intro-seen .intro { display: none; }
+  @media (prefers-reduced-motion: reduce) {
+    .intro { display: none; }
+  }
+}
+
+@keyframes intro-draw { to { stroke-dashoffset: 0; } }
+@keyframes intro-word { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes intro-lift {
+  from { clip-path: inset(0 0 0 0); }
+  to { clip-path: inset(0 0 100% 0); visibility: hidden; }
+}

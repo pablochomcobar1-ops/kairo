@@ -143,6 +143,15 @@
   color-scheme: dark;
 }
 
+/* Layout chrome (not theme-dependent) */
+:root {
+  --header-h: 4rem;              /* 64 on phones */
+  scroll-padding-top: var(--header-h);
+}
+@media (min-width: 64rem) {
+  :root { --header-h: 4.5rem; }  /* 72 on desktop */
+}
+
 /* Theme change = colours tween; skipped under reduced motion */
 html {
   transition:
@@ -264,6 +273,7 @@ html {
 @keyframes drawer-left-out   { from { transform: translateX(0); } to { transform: translateX(-100%); } }
 @keyframes drawer-bottom-in  { from { transform: translateY(100%); } to { transform: translateY(0); } }
 @keyframes drawer-bottom-out { from { transform: translateY(0); } to { transform: translateY(100%); } }
+@keyframes mega-in { from { opacity: 0; transform: translateY(-8px); } to { opacity: 1; transform: translateY(0); } }
 @keyframes accordion-down { from { height: 0; } to { height: var(--radix-accordion-content-height); } }
 @keyframes accordion-up   { from { height: var(--radix-accordion-content-height); } to { height: 0; } }
 

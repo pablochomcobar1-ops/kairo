@@ -12,6 +12,7 @@ import { IconButton } from "@/components/ui/IconButton";
 import { ArrowRightIcon, BagIcon, HeartIcon, MenuIcon, SearchIcon, UserIcon } from "@/components/ui/icons";
 import { Price } from "@/components/ui/Price";
 import { Skeleton } from "@/components/ui/Skeleton";
+import { SampleBag } from "./SampleBag";
 
 export const metadata: Metadata = {
   title: "Design system",
@@ -32,7 +33,7 @@ function Section({ id, title, children }: { id: string; title: string; children:
 /** Every building block on one page, in the current theme. Hidden from search engines. */
 export default function Styleguide() {
   return (
-    <main className="mx-auto flex max-w-site flex-col gap-14 px-gutter py-section">
+    <div className="mx-auto flex max-w-site flex-col gap-14 px-gutter py-section">
       <header className="flex flex-col gap-5">
         <p className="font-mono text-caption01 uppercase text-accent">KAIRO · Design system</p>
         <SplitText as="h1" immediate text={"Cut once.\nWorn for years."} className="font-display text-hero02 font-bold" />
@@ -139,17 +140,18 @@ export default function Styleguide() {
               </tbody>
             </table>
           </Dialog>
-          <Drawer
-            title="Your bag (2)"
-            trigger={<Button variant="outline">Cart drawer</Button>}
-            footer={<Button className="w-full">Checkout · ₹17,100</Button>}
-          >
-            <p className="text-body02 text-foreground-secondary">Cart lines arrive in Task 4.</p>
-          </Drawer>
-          <Drawer title="Menu" side="left" trigger={<Button variant="outline">Menu drawer</Button>}>
-            <p className="text-body02 text-foreground-secondary">The full mobile menu arrives in Task 4.</p>
+          <Drawer title="Filters" side="bottom" trigger={<Button variant="outline">Bottom sheet</Button>}>
+            <p className="text-body02 text-foreground-secondary">Phone filters use this sheet (Task 7).</p>
           </Drawer>
         </div>
+      </Section>
+
+      <Section id="bag" title="The bag">
+        <p className="max-w-prose text-body02 text-foreground-secondary">
+          Adds sample items so the bag drawer can be tried before product pages exist (Task 7). The bag is saved in
+          this browser and survives a reload.
+        </p>
+        <SampleBag />
       </Section>
 
       <Section id="accordion" title="Accordion">
@@ -178,6 +180,6 @@ export default function Styleguide() {
           <Skeleton className="h-40" />
         </div>
       </Section>
-    </main>
+    </div>
   );
 }

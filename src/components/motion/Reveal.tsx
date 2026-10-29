@@ -37,8 +37,10 @@ export function Reveal({ as = "div", children, className, delay = 0, y = 24 }: P
   return (
     <Tag
       className={className}
-      initial={reduce ? { opacity: 0 } : { opacity: 0, transform: `translateY(${y}px)` }}
-      whileInView={reduce ? { opacity: 1 } : { opacity: 1, transform: "translateY(0px)" }}
+      // The server can't know about reduced motion, so its HTML always starts lowered;
+      // the target always includes the transform so it settles at 0 either way.
+      initial={{ opacity: 0, transform: reduce ? "translateY(0px)" : `translateY(${y}px)` }}
+      whileInView={{ opacity: 1, transform: "translateY(0px)" }}
       viewport={{ once: true, margin: "0px 0px -10% 0px" }}
       transition={{ duration: reduce ? 0.2 : timing.reveal, delay, ease: EASE.expo }}
     >

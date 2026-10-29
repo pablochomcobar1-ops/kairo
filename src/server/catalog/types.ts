@@ -65,6 +65,38 @@ export interface HomeData {
   reviews: ReviewSnippet[];
 }
 
+/** A product as the shop grid and search need it (cards plus what filters look at). */
+export interface CatalogProduct extends ProductCardData {
+  /** ISO date, for "newest" */
+  createdAt: string;
+  variants: VariantData[];
+  /** lower-case name, collection, fabric, colours and description, for search */
+  searchText: string;
+}
+
+export interface ReviewData extends ReviewSnippet {
+  /** ISO date */
+  createdAt: string;
+}
+
+export interface ProductDetail extends ProductCardData {
+  description: string;
+  fabric: string;
+  fit: string;
+  care: string;
+  variants: VariantData[];
+  drop: { slug: string; name: string; startsAt: string } | null;
+  /** this piece first, then what it is styled with */
+  look: LookPiece[];
+  /** one piece from another collection */
+  anotherWay: ProductCardData | null;
+  reviews: ReviewData[];
+  rating: { average: number; count: number };
+}
+
 export interface CatalogSource {
   getHomeData(): Promise<HomeData>;
+  /** every published product */
+  getCatalog(): Promise<CatalogProduct[]>;
+  getProduct(slug: string): Promise<ProductDetail | null>;
 }

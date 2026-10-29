@@ -17,4 +17,10 @@ class NoopIntersectionObserver {
     return [];
   }
 }
-globalThis.IntersectionObserver ??= NoopIntersectionObserver as unknown as typeof IntersectionObserver;
+globalThis.IntersectionObserver ??=
+  NoopIntersectionObserver as unknown as typeof IntersectionObserver;
+
+// jsdom has no layout, so scrolling an element into view does nothing
+if (typeof Element !== "undefined" && !Element.prototype.scrollIntoView) {
+  Element.prototype.scrollIntoView = function scrollIntoView() {};
+}

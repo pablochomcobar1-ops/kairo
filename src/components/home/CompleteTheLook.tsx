@@ -50,7 +50,16 @@ function firstInStock(piece: LookPiece, colour?: string) {
  * a hotspot opens a mini card. "Add the whole look" picks a size for every
  * piece in one dialog and puts them all in the bag.
  */
-export function CompleteTheLook({ look }: { look: LookPiece[] }) {
+export function CompleteTheLook({
+  look,
+  title = "The long\nway home",
+  eyebrow = "Complete the look",
+}: {
+  look: LookPiece[];
+  /** headline; "\n" breaks the line */
+  title?: string;
+  eyebrow?: string;
+}) {
   const [open, setOpen] = useState<number | null>(null);
   const [dialog, setDialog] = useState(false);
   const frame = useRef<HTMLDivElement>(null);
@@ -220,14 +229,11 @@ export function CompleteTheLook({ look }: { look: LookPiece[] }) {
         <div className="flex flex-col gap-6">
           <Reveal>
             <p className="font-mono text-caption01 tracking-[0.2em] text-accent uppercase">
-              Complete the look
+              {eyebrow}
             </p>
           </Reveal>
           <div id="look-title">
-            <SplitText
-              text={"The long\nway home"}
-              className="font-display text-heading01 font-bold"
-            />
+            <SplitText text={title} className="font-display text-heading01 font-bold" />
           </div>
           <Reveal delay={0.1}>
             <ul className="flex flex-col divide-y divide-border border-y border-border">

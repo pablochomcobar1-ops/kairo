@@ -2,7 +2,7 @@ import "server-only";
 import { cacheLife, cacheTag } from "next/cache";
 import { fixturesSource } from "./fixtures";
 import { supabaseSource } from "./supabase";
-import type { CatalogSource, HomeData } from "./types";
+import type { CatalogProduct, CatalogSource, HomeData, ProductDetail } from "./types";
 
 export type * from "./types";
 
@@ -23,4 +23,26 @@ export async function getHomeData(): Promise<HomeData> {
   cacheLife("hours");
   cacheTag(CATALOG_TAG);
   return source().getHomeData();
+}
+
+/**
+ * Every published product, cached. The catalog is small (dozens of pieces), so
+ * shop filters, collection pages and search all work on this one cached list
+ * instead of a database query per filter combination.
+ */
+export async function getCatalog(): Promise<CatalogProduct[]> {
+  "use cache";
+  cacheLife("hours");
+  cacheTag(CATALOG_TAG);
+  return source().getCatalog();
+}
+
+const SLUG = /^[a-z0-9]+(-[a-z0-9]+)*$/;
+
+export async function getProduct(slug: string): Promise<ProductDetail | null> {
+  "use cache";
+  cacheLife("hours");
+  cacheTag(CATALOG_TAG, `product:${slug}`);
+  if (!SLUG.test(slug) || slug.length > 120) return null;
+  return source().getProduct(slug);
 }

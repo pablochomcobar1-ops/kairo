@@ -25,12 +25,15 @@ function Digit({ value }: { value: string }) {
   );
 }
 
-function Unit({ value, label }: { value: number | null; label: string }) {
+function Unit({ value, label, small }: { value: number | null; label: string; small?: boolean }) {
   const text = value == null ? "--" : String(value).padStart(2, "0");
   return (
     <div className="flex flex-col items-start gap-2">
       <span
-        className="font-mono text-[clamp(2.75rem,8vw,6rem)] leading-none font-medium tabular-nums"
+        className={cn(
+          "font-mono leading-none font-medium tabular-nums",
+          small ? "text-[clamp(2rem,6vw,2.75rem)]" : "text-[clamp(2.75rem,8vw,6rem)]",
+        )}
         aria-hidden="true"
       >
         {text.split("").map((d, i) => (
@@ -56,10 +59,12 @@ export function Countdown({
   target,
   onDone,
   className,
+  size = "lg",
 }: {
   target: string;
   onDone?: () => void;
   className?: string;
+  size?: "lg" | "sm";
 }) {
   const [left, setLeft] = useState<TimeLeft | null>(null);
 
@@ -94,11 +99,15 @@ export function Countdown({
 
   return (
     <div className={cn("flex flex-col gap-3", className)}>
-      <div className="flex gap-5 md:gap-10" role="timer" aria-label="Time until the drop">
-        <Unit value={left?.days ?? null} label="Days" />
-        <Unit value={left?.hours ?? null} label="Hours" />
-        <Unit value={left?.minutes ?? null} label="Min" />
-        <Unit value={left?.seconds ?? null} label="Sec" />
+      <div
+        className={cn("flex", size === "sm" ? "gap-5" : "gap-5 md:gap-10")}
+        role="timer"
+        aria-label="Time until the drop"
+      >
+        <Unit value={left?.days ?? null} label="Days" small={size === "sm"} />
+        <Unit value={left?.hours ?? null} label="Hours" small={size === "sm"} />
+        <Unit value={left?.minutes ?? null} label="Min" small={size === "sm"} />
+        <Unit value={left?.seconds ?? null} label="Sec" small={size === "sm"} />
       </div>
       <p className="sr-only">{spoken}</p>
     </div>

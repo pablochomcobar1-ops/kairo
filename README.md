@@ -13,7 +13,7 @@ Designed and built by **Jainam Gondaliya**. Kairo is a concept brand; product im
 | 1 | Brief, positioning, site architecture | Done |
 | 2 | Visual direction (A: Noir Atelier) + design tokens | Done |
 | 3 | Build plan | Done |
-| 4 | Build | Tasks 0–6 done |
+| 4 | Build | Tasks 0–7 done |
 | 5 | Security hardening | Not started |
 | 6 | QA, SEO, accessibility, performance | Not started |
 | 7 | Launch on Vercel | Not started |
@@ -34,7 +34,9 @@ src/app/(store)/              Shopper pages share one layout: header, footer, ca
 src/components/layout/        Header, mega menu, mobile menu, footer, intro loader, curtain
 src/components/three/         WebGL silk hero and the Four Wardrobes (3D + 2.5D)
 src/components/home/          Home page sections: marquee, drop countdown, New In, Complete the Look, story, reviews, drop alerts
-src/components/product/       Product card and the garment drawings used until the photo shoot
+src/components/product/       Product card, quick view, gallery, size/colour picker, size guide, reviews
+src/components/shop/          Filter bar, product grid, search box
+src/lib/filters.ts            Shop filters and search (URL in, safe values out)
 src/server/catalog/           Reads the catalog: Supabase, or the catalog file when KAIRO_DATA=fixtures
 src/server/actions/           Server Actions (form posts), e.g. drop alerts
 src/stores/                   Bag (saved in the browser) and site UI state

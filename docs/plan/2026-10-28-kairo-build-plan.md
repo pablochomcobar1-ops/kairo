@@ -289,6 +289,8 @@ LCP under 2.5 s on a mid-range phone on 4G · CLS under 0.05 · INP under 200 ms
 - [ ] **Step 4:** Quick view: the product card's "Quick view" opens a Dialog with gallery, size picker and Add to bag, without leaving the grid (Escape closes, focus returns to the card).
 - [ ] **Step 5:** Commit "Task 7: catalog".
 
+**As built (2026-10-29):** filters, sorting and search run on one cached catalog list (`getCatalog()`), not a query per filter; fine for dozens of pieces, revisit past a few hundred. Size + colour filters match the same in-stock variant. Search is word matching over name, collection, fabric, colours and description (no Postgres full-text yet). Drop pieces can't be added to the bag before the drop opens (the buy box becomes a countdown and "notify me"); checkout must enforce the same in Task 9. Product structured data leaves out the star rating while every review is a sample. Unknown product or collection URLs show the not-found page with `noindex` (status 200, because those pages stream).
+
 ### Task 8: Auth, account, wishlist, rate limits, Turnstile
 
 **Files:** Create: `src/app/(account)/{login,signup,forgot-password,reset-password,account,account/orders/[id],account/addresses}/page.tsx`, `src/app/auth/callback/route.ts`, `src/middleware.ts`, `src/lib/ratelimit.ts`, `src/lib/validation.ts`, `src/server/actions/{auth,addresses,wishlist}.ts`, `src/stores/wishlist.ts`, `tests/unit/validation.test.ts`

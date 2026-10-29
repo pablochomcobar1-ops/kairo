@@ -9,6 +9,7 @@ import { productImageUrl } from "@/lib/images";
 import { Badge } from "@/components/ui/Badge";
 import { Price } from "@/components/ui/Price";
 import { ProductArt } from "./ProductArt";
+import { QuickView } from "./QuickView";
 
 const LOW_STOCK = 5;
 
@@ -38,12 +39,15 @@ export function ProductCard({
   className,
   sizes = "card",
   draggable,
+  quickView = true,
 }: {
   product: ProductCardData;
   className?: string;
   sizes?: "card" | "wide";
   /** inside a drag carousel: a drag must not count as a click */
   draggable?: { isDragging: () => boolean };
+  /** show the "Quick view" button (on by default) */
+  quickView?: boolean;
 }) {
   const reduce = useReducedMotion();
   const [fine, setFine] = useState(false);
@@ -77,41 +81,54 @@ export function ProductCard({
 
   return (
     <article className={cn("group relative", className)}>
-      <motion.div
-        onPointerMove={onMove}
-        onPointerLeave={onLeave}
-        style={tilt ? { rotateX: rx, rotateY: ry, transformPerspective: 900 } : undefined}
-        className={cn(
-          "relative overflow-hidden bg-background-secondary",
-          sizes === "wide" ? "aspect-[4/5]" : "aspect-[3/4]",
-        )}
-      >
-        <div className="absolute inset-0 transition-transform duration-700 ease-out-expo group-hover:scale-[1.03]">
-          <Visual product={product} view={0} />
-        </div>
-        {product.images.length > 1 && (
-          <div
-            aria-hidden="true"
-            className="absolute inset-0 opacity-0 transition-opacity duration-500 ease-ui group-hover:opacity-100"
-          >
-            <Visual product={product} view={1} />
+      {/* the button sits outside the tilting picture so it stays above the card's link */}
+      <div className="relative">
+        <motion.div
+          onPointerMove={onMove}
+          onPointerLeave={onLeave}
+          style={tilt ? { rotateX: rx, rotateY: ry, transformPerspective: 900 } : undefined}
+          className={cn(
+            "relative overflow-hidden bg-background-secondary",
+            sizes === "wide" ? "aspect-[4/5]" : "aspect-[3/4]",
+          )}
+        >
+          <div className="absolute inset-0 transition-transform duration-700 ease-out-expo group-hover:scale-[1.03]">
+            <Visual product={product} view={0} />
           </div>
+          {product.images.length > 1 && (
+            <div
+              aria-hidden="true"
+              className="absolute inset-0 opacity-0 transition-opacity duration-500 ease-ui group-hover:opacity-100"
+            >
+              <Visual product={product} view={1} />
+            </div>
+          )}
+          <div className="pointer-events-none absolute top-3 left-3 flex flex-wrap gap-1.5">
+            {product.dropSlug && <Badge tone="accent">Drop 01</Badge>}
+            {reduced && <Badge tone="inverse">Reduced</Badge>}
+            {low && (
+              <Badge
+                tone="neutral"
+                className="animate-pulse-once bg-background/70 backdrop-blur-sm"
+              >
+                Only {product.totalStock} left
+              </Badge>
+            )}
+            {soldOut && (
+              <Badge tone="neutral" className="bg-background/70">
+                Sold out
+              </Badge>
+            )}
+          </div>
+        </motion.div>
+        {quickView && (
+          <QuickView
+            slug={product.slug}
+            name={product.name}
+            className="absolute right-3 bottom-3 z-10 [@media(hover:hover)]:translate-y-1 [@media(hover:hover)]:opacity-0 [@media(hover:hover)]:group-focus-within:translate-y-0 [@media(hover:hover)]:group-focus-within:opacity-100 [@media(hover:hover)]:group-hover:translate-y-0 [@media(hover:hover)]:group-hover:opacity-100"
+          />
         )}
-        <div className="pointer-events-none absolute top-3 left-3 flex flex-wrap gap-1.5">
-          {product.dropSlug && <Badge tone="accent">Drop 01</Badge>}
-          {reduced && <Badge tone="inverse">Reduced</Badge>}
-          {low && (
-            <Badge tone="neutral" className="animate-pulse-once bg-background/70 backdrop-blur-sm">
-              Only {product.totalStock} left
-            </Badge>
-          )}
-          {soldOut && (
-            <Badge tone="neutral" className="bg-background/70">
-              Sold out
-            </Badge>
-          )}
-        </div>
-      </motion.div>
+      </div>
 
       <div className="mt-4 flex items-start justify-between gap-4">
         <h3 className="text-body02 leading-snug font-semibold">

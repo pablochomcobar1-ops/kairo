@@ -110,6 +110,15 @@ describe("addresses, orders, checkout", () => {
       false,
     );
     expect(checkoutSchema.safeParse({ ...base, items: [] }).success).toBe(false);
+    // the delivery address doesn't ask for the mobile again (it uses the contact one)
+    const addressWithoutPhone = { ...address, phone: undefined };
+    expect(
+      checkoutSchema.safeParse({
+        ...base,
+        address: addressWithoutPhone,
+        items: [{ variantId: id, qty: 1 }],
+      }).success,
+    ).toBe(true);
   });
 });
 

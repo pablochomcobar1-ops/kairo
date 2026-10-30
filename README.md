@@ -13,7 +13,7 @@ Designed and built by **Jainam Gondaliya**. Kairo is a concept brand; product im
 | 1 | Brief, positioning, site architecture | Done |
 | 2 | Visual direction (A: Noir Atelier) + design tokens | Done |
 | 3 | Build plan | Done |
-| 4 | Build | Tasks 0–8 done |
+| 4 | Build | Tasks 0–9 done |
 | 5 | Security hardening | Not started |
 | 6 | QA, SEO, accessibility, performance | Not started |
 | 7 | Launch on Vercel | Not started |
@@ -43,6 +43,10 @@ src/server/auth.ts            Who is signed in (checked with Supabase on each re
 src/server/ratelimit.ts       Rate limits via Upstash (IP addresses hashed)
 src/server/turnstile.ts       Cloudflare Turnstile bot check
 src/components/account/       Sign-in/up forms, account pages' pieces, wishlist heart and sync
+src/server/checkout/          Pricing a bag from the database, completing a payment (once)
+src/server/razorpay.ts        Razorpay orders and HMAC signature checks
+src/app/api/razorpay/webhook/ Razorpay → Kairo payment notifications (signature-checked)
+src/server/email.ts           Order emails through Resend
 src/server/catalog/           Reads the catalog: Supabase, or the catalog file when KAIRO_DATA=fixtures
 src/server/actions/           Server Actions (form posts), e.g. drop alerts
 src/stores/                   Bag (saved in the browser) and site UI state
@@ -70,5 +74,7 @@ npm run build      # production build
 ```
 
 Copy `.env.example` to `.env.local` when a task asks for keys. Never commit `.env.local`.
+
+**Test payment:** Razorpay test card `4111 1111 1111 1111`, any future expiry, any CVV; or UPI ID `success@razorpay`. No real money moves.
 
 No database handy? `KAIRO_DATA=fixtures npm run dev` reads the products straight from `supabase/seed/catalog.mjs` (the GitHub checks do this). Forms then pretend to save.

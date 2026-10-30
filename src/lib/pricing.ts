@@ -26,3 +26,26 @@ export function clampQty(qty: number): number {
   if (!Number.isFinite(qty)) return 1;
   return Math.min(MAX_QTY_PER_LINE, Math.max(1, Math.floor(qty)));
 }
+
+export interface Totals {
+  subtotal: number;
+  discount: number;
+  shipping: number;
+  total: number;
+}
+
+/**
+ * The order total, all in paise. Shipping is free when the subtotal AFTER the
+ * discount reaches ₹3,000. The discount can never exceed the subtotal.
+ */
+export function computeTotals(
+  items: { unitPaise: number; qty: number }[],
+  discountPaise: number,
+): Totals {
+  const subtotal = items.reduce((n, i) => n + i.unitPaise * i.qty, 0);
+  const discount = Math.min(subtotal, Math.max(0, Math.floor(discountPaise)));
+  const afterDiscount = subtotal - discount;
+  const shipping =
+    subtotal === 0 || afterDiscount >= FREE_SHIPPING_THRESHOLD_PAISE ? 0 : SHIPPING_FEE_PAISE;
+  return { subtotal, discount, shipping, total: afterDiscount + shipping };
+}

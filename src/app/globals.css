@@ -93,6 +93,16 @@
     animation: intro-draw 800ms var(--ease-out-expo) both;
   }
   .intro .mono-ring-2 { animation-delay: 120ms; }
+
+  /* the monogram draws itself once on the order-placed page */
+  .draw-once .mono-ring,
+  .draw-once .mono-k {
+    stroke-dasharray: 1;
+    stroke-dashoffset: 1;
+    animation: intro-draw 900ms var(--ease-out-expo) 200ms both;
+  }
+  .draw-once .mono-ring-2 { animation-delay: 320ms; }
+  .draw-once .mono-k { animation-duration: 700ms; animation-delay: 650ms; }
   .intro .mono-k { animation-duration: 650ms; animation-delay: 450ms; }
   .intro-word { animation: intro-word 700ms var(--ease-out-expo) 800ms both; }
 

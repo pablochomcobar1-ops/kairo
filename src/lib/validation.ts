@@ -155,7 +155,8 @@ export const trackSchema = z.object({ email: emailSchema, orderNumber: orderNumb
 export const checkoutSchema = z.object({
   email: emailSchema,
   phone: phoneSchema,
-  address: addressSchema.omit({ isDefault: true }),
+  // the contact mobile above is the delivery mobile too
+  address: addressSchema.omit({ isDefault: true, phone: true }),
   couponCode: z
     .string()
     .trim()

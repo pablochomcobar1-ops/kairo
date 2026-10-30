@@ -1,4 +1,5 @@
 import "server-only";
+import { createHash } from "node:crypto";
 import * as catalog from "../../../supabase/seed/catalog.mjs";
 import { FEATURED_LOOK_SLUG } from "./featured";
 import { buildSearchText } from "./search-text";
@@ -30,12 +31,18 @@ function hash(s: string): number {
   return h >>> 0;
 }
 
+/** A stable UUID per variant (checkout only accepts UUIDs, like the real database ids). */
+export function fixtureUuid(key: string): string {
+  const h = createHash("sha1").update(`kairo-fixture:${key}`).digest("hex");
+  return `${h.slice(0, 8)}-${h.slice(8, 12)}-5${h.slice(13, 16)}-8${h.slice(17, 20)}-${h.slice(20, 32)}`;
+}
+
 function variantsOf(p: SeedProduct): VariantData[] {
   return p.colours.flatMap((colour) =>
     p.sizes.map((size) => {
       const h = hash(`${p.slug}|${colour}|${size}`);
       return {
-        id: `fixture-${p.slug}-${colour}-${size}`.toLowerCase().replace(/\s+/g, "-"),
+        id: fixtureUuid(`${p.slug}|${colour}|${size}`),
         size,
         colour,
         stock: h % 7 === 0 ? 0 : 2 + (h % 15),

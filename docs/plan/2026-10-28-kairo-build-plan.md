@@ -321,6 +321,8 @@ LCP under 2.5 s on a mid-range phone on 4G · CLS under 0.05 · INP under 200 ms
 - [ ] **Step 6:** Webhook reads the raw body, verifies, handles `payment.captured` (→ `mark_order_paid`, send email) and `payment.failed` (→ `payment_status = 'failed'`), returns 200 for unknown events.
 - [ ] **Step 7:** Manual test with Razorpay test card and test UPI ID; order appears in admin. Commit "Task 9: checkout".
 
+**As built (2026-10-30):** checkout pricing lives in `src/server/checkout/core.ts` behind a small store interface, so "ignores client price", "Only N left in size M" and "drop not open yet" are unit-tested without a database (the database-level idempotency of `mark_order_paid` stays covered by Task 1's tests). The browser's success callback and the webhook both call `completePayment`; only the call that gets `'paid'` sends the email. Resend and Razorpay are called with `fetch` (no SDKs). Each "Pay" press creates one order awaiting payment; abandoned ones never show in accounts or tracking and the admin can clear them (Task 12). The success page shows only the order number from the URL, never order details. Stage 5 CSP must allow `checkout.razorpay.com` (script, frame) and `api.razorpay.com`.
+
 ### Task 10: Reviews
 
 **Files:** Create: `src/server/actions/reviews.ts`, `src/components/product/{Reviews,ReviewForm,Stars}.tsx`, `tests/unit/reviews.test.ts`

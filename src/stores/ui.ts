@@ -9,6 +9,9 @@ interface UiState {
   /** How many hero sections are on screen; the header goes transparent over them. */
   heroCount: number;
   heroMounted: () => () => void;
+  /** null until the browser has checked; then whether a shopper is signed in */
+  signedIn: boolean | null;
+  setSignedIn: (v: boolean) => void;
 }
 
 export const useUi = create<UiState>()((set) => ({
@@ -19,4 +22,6 @@ export const useUi = create<UiState>()((set) => ({
     set((s) => ({ heroCount: s.heroCount + 1 }));
     return () => set((s) => ({ heroCount: Math.max(0, s.heroCount - 1) }));
   },
+  signedIn: null,
+  setSignedIn: (signedIn) => set({ signedIn }),
 }));

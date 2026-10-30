@@ -1,12 +1,12 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname } from "next/navigation";
 import { useCallback, useEffect, useId, useRef, useState } from "react";
 import { COLLECTIONS } from "@/lib/collections";
 import { THEMES } from "@/lib/theme";
 import { ChevronDownIcon } from "@/components/ui/icons";
 import { CollectionLink } from "./CollectionLink";
+import { RouteWatcher } from "./RouteWatcher";
 
 const OPEN_DELAY = 120; // a mouse passing over "Shop" shouldn't open it
 const CLOSE_DELAY = 220; // moving diagonally into the panel shouldn't close it
@@ -22,7 +22,6 @@ export function MegaMenu() {
   const buttonRef = useRef<HTMLButtonElement>(null);
   const rootRef = useRef<HTMLDivElement>(null);
   const timer = useRef<number | undefined>(undefined);
-  const pathname = usePathname();
 
   const schedule = useCallback((next: boolean, delay: number) => {
     window.clearTimeout(timer.current);
@@ -30,11 +29,11 @@ export function MegaMenu() {
   }, []);
 
   // Close whenever the page changes.
-  const [lastPath, setLastPath] = useState(pathname);
-  if (pathname !== lastPath) {
-    setLastPath(pathname);
-    setOpen(false);
-  }
+  const lastPath = useRef<string | null>(null);
+  const onRoute = useCallback((path: string) => {
+    if (lastPath.current !== null && lastPath.current !== path) setOpen(false);
+    lastPath.current = path;
+  }, []);
 
   useEffect(() => () => window.clearTimeout(timer.current), []);
 
@@ -66,6 +65,7 @@ export function MegaMenu() {
         if (!rootRef.current?.contains(e.relatedTarget as Node)) setOpen(false);
       }}
     >
+      <RouteWatcher onChange={onRoute} />
       <button
         ref={buttonRef}
         type="button"
@@ -78,7 +78,10 @@ export function MegaMenu() {
         className="group inline-flex h-11 items-center gap-1.5 font-mono text-caption01 uppercase transition-colors duration-150 hover:text-accent aria-expanded:text-accent"
       >
         Shop
-        <ChevronDownIcon size={14} className="transition-transform duration-200 ease-ui group-aria-expanded:rotate-180" />
+        <ChevronDownIcon
+          size={14}
+          className="transition-transform duration-200 ease-ui group-aria-expanded:rotate-180"
+        />
       </button>
 
       <div
@@ -99,9 +102,14 @@ export function MegaMenu() {
                 <span
                   aria-hidden="true"
                   className="absolute inset-0 opacity-60 transition-opacity duration-500 group-hover:opacity-100"
-                  style={{ background: `radial-gradient(120% 80% at 80% 0%, ${t.accent}55 0%, transparent 60%)` }}
+                  style={{
+                    background: `radial-gradient(120% 80% at 80% 0%, ${t.accent}55 0%, transparent 60%)`,
+                  }}
                 />
-                <span className="relative font-mono text-caption02 uppercase" style={{ color: t.accent }}>
+                <span
+                  className="relative font-mono text-caption02 uppercase"
+                  style={{ color: t.accent }}
+                >
                   {c.number} · {c.mood}
                 </span>
                 <span className="relative flex flex-col gap-2">

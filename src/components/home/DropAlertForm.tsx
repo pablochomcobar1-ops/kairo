@@ -46,6 +46,7 @@ export function DropAlertForm({
         <input
           id={`${id}-email`}
           name="email"
+          defaultValue={state.email}
           type="email"
           inputMode="email"
           autoComplete="email"

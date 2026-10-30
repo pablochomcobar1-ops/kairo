@@ -1,9 +1,19 @@
 "use client";
 
 import { AnimatePresence, motion, useReducedMotion } from "motion/react";
-import { usePathname, useRouter } from "next/navigation";
-import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState, type ReactNode } from "react";
+import { useRouter } from "next/navigation";
+import {
+  createContext,
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+  type ReactNode,
+} from "react";
 import { THEMES, type ThemeName } from "@/lib/theme";
+import { RouteWatcher } from "./RouteWatcher";
 
 /**
  * The curtain between collections (timings from the Stage 2 storyboard):
@@ -44,14 +54,14 @@ function pathOf(href: string) {
 
 export function CurtainProvider({ children }: { children: ReactNode }) {
   const router = useRouter();
-  const pathname = usePathname();
+  const [pathname, setPathname] = useState("");
   const reduceMotion = useReducedMotion();
   const [state, setState] = useState<CurtainState>({ phase: "idle", theme: "noir", target: "" });
   const hrefRef = useRef("");
 
   const go = useCallback(
     (href: string, theme: ThemeName) => {
-      if (pathOf(href) === pathOf(pathname)) return;
+      if (pathOf(href) === pathOf(pathname || window.location.pathname)) return;
       hrefRef.current = href;
       setState((s) => (s.phase === "idle" ? { phase: "cover", theme, target: pathOf(href) } : s));
     },
@@ -95,6 +105,7 @@ export function CurtainProvider({ children }: { children: ReactNode }) {
 
   return (
     <CurtainContext.Provider value={api}>
+      <RouteWatcher onChange={setPathname} />
       {children}
       <AnimatePresence>
         {state.phase !== "idle" && (
@@ -125,7 +136,11 @@ export function CurtainProvider({ children }: { children: ReactNode }) {
                 <motion.span
                   className="font-display text-hero02 font-bold"
                   initial={{ opacity: 0, y: 24 }}
-                  animate={{ opacity: 1, y: 0, transition: { delay: 0.08, duration: 0.35, ease: EASE_IN_OUT } }}
+                  animate={{
+                    opacity: 1,
+                    y: 0,
+                    transition: { delay: 0.08, duration: 0.35, ease: EASE_IN_OUT },
+                  }}
                 >
                   {info.label}
                 </motion.span>

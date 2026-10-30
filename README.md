@@ -13,7 +13,7 @@ Designed and built by **Jainam Gondaliya**. Kairo is a concept brand; product im
 | 1 | Brief, positioning, site architecture | Done |
 | 2 | Visual direction (A: Noir Atelier) + design tokens | Done |
 | 3 | Build plan | Done |
-| 4 | Build | Tasks 0–7 done |
+| 4 | Build | Tasks 0–8 done |
 | 5 | Security hardening | Not started |
 | 6 | QA, SEO, accessibility, performance | Not started |
 | 7 | Launch on Vercel | Not started |
@@ -37,6 +37,12 @@ src/components/home/          Home page sections: marquee, drop countdown, New I
 src/components/product/       Product card, quick view, gallery, size/colour picker, size guide, reviews
 src/components/shop/          Filter bar, product grid, search box
 src/lib/filters.ts            Shop filters and search (URL in, safe values out)
+src/lib/validation.ts         Every form's rules (Zod), used on the server
+src/proxy.ts                  Session refresh; /account needs sign-in, /admin needs an admin
+src/server/auth.ts            Who is signed in (checked with Supabase on each request)
+src/server/ratelimit.ts       Rate limits via Upstash (IP addresses hashed)
+src/server/turnstile.ts       Cloudflare Turnstile bot check
+src/components/account/       Sign-in/up forms, account pages' pieces, wishlist heart and sync
 src/server/catalog/           Reads the catalog: Supabase, or the catalog file when KAIRO_DATA=fixtures
 src/server/actions/           Server Actions (form posts), e.g. drop alerts
 src/stores/                   Bag (saved in the browser) and site UI state

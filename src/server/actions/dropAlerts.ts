@@ -1,9 +1,10 @@
 "use server";
 
 import { z } from "zod";
+import { clientIp, limit, tooMany } from "@/server/ratelimit";
 import { createAdminClient } from "@/server/supabase/admin";
 
-export type DropAlertState = { status: "idle" | "ok" | "error"; message: string };
+export type DropAlertState = { status: "idle" | "ok" | "error"; message: string; email?: string };
 
 const schema = z.object({
   email: z
@@ -31,7 +32,7 @@ const OK: DropAlertState = {
  * checks the Origin header), the input is validated here, and the insert goes
  * through the server key with fixed columns. The reply is the same for a new
  * or an already-listed email, so nobody can test which emails are signed up.
- * Rate limiting and Turnstile are added with the other public forms in Task 8.
+ * Limited to 3 sign-ups per 10 minutes per visitor.
  */
 export async function joinDropAlerts(
   _prev: DropAlertState,
@@ -50,8 +51,17 @@ export async function joinDropAlerts(
     return {
       status: "error",
       message: emailIssue?.message ?? "Something in the form isn't right.",
+      email: String(form.get("email") ?? "").slice(0, 254),
     };
   }
+
+  const rl = await limit("alert", await clientIp());
+  if (!rl.ok)
+    return {
+      status: "error",
+      message: tooMany(rl),
+      email: String(form.get("email") ?? "").slice(0, 254),
+    };
 
   if (process.env.KAIRO_DATA === "fixtures") return OK;
 
@@ -76,6 +86,7 @@ export async function joinDropAlerts(
     return {
       status: "error",
       message: "We couldn't save that just now. Please try again in a minute.",
+      email: parsed.data.email,
     };
   }
 }

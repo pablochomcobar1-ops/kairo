@@ -1,3 +1,4 @@
+import { AccountSync } from "@/components/account/AccountSync";
 import { CartDrawer } from "@/components/cart/CartDrawer";
 import { Footer } from "@/components/layout/Footer";
 import { Header } from "@/components/layout/Header";
@@ -12,6 +13,7 @@ export default function StoreLayout({ children }: LayoutProps<"/">) {
       </main>
       <Footer />
       <CartDrawer />
+      <AccountSync />
     </>
   );
 }

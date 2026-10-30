@@ -8,7 +8,9 @@ vi.mock("next/navigation", () => ({
   useRouter: () => ({ push: vi.fn() }),
 }));
 vi.mock("next/link", () => ({
-  default: ({ href, ...rest }: AnchorHTMLAttributes<HTMLAnchorElement> & { href: string }) => <a href={href} {...rest} />,
+  default: ({ href, ...rest }: AnchorHTMLAttributes<HTMLAnchorElement> & { href: string }) => (
+    <a href={href} {...rest} />
+  ),
 }));
 
 const { Header } = await import("@/components/layout/Header");
@@ -30,7 +32,8 @@ const tee = {
 };
 
 /** The free-shipping message (a live region, so screen readers hear it change). */
-const shippingNote = () => screen.getByText((_, el) => el?.tagName === "P" && /free shipping/.test(el.textContent ?? ""));
+const shippingNote = () =>
+  screen.getByText((_, el) => el?.tagName === "P" && /free shipping/.test(el.textContent ?? ""));
 
 beforeEach(() => {
   localStorage.clear();
@@ -81,9 +84,20 @@ describe("Header", () => {
 
   it("names its icon links", () => {
     render(<Header />);
-    for (const name of ["Search", "Wishlist", "Account", "KAIRO home"]) {
+    for (const name of ["Search", "Wishlist", "Sign in", "KAIRO home"]) {
       expect(screen.getByRole("link", { name })).toBeInTheDocument();
     }
+  });
+
+  it("account link and wishlist count follow the shopper", async () => {
+    const { useWishlist } = await import("@/stores/wishlist");
+    useUi.setState({ signedIn: true });
+    useWishlist.setState({ slugs: ["static-heavy-tee", "boardroom-blazer"] });
+    render(<Header />);
+    expect(screen.getByRole("link", { name: "Your account" })).toHaveAttribute("href", "/account");
+    expect(screen.getByRole("link", { name: "Wishlist (2)" })).toBeInTheDocument();
+    useUi.setState({ signedIn: null });
+    useWishlist.setState({ slugs: [] });
   });
 });
 
@@ -103,7 +117,10 @@ describe("CartDrawer", () => {
     const drawer = screen.getByRole("dialog", { name: "Your bag (1)" });
     expect(within(drawer).getByText("Static Heavy Tee")).toBeInTheDocument();
     expect(shippingNote()).toHaveTextContent("Add ₹800 more for free shipping.");
-    expect(within(drawer).getByRole("link", { name: "Checkout" })).toHaveAttribute("href", "/checkout");
+    expect(within(drawer).getByRole("link", { name: "Checkout" })).toHaveAttribute(
+      "href",
+      "/checkout",
+    );
   });
 
   it("changes quantity, stops at 5, and removes", async () => {
@@ -133,6 +150,8 @@ describe("Footer", () => {
     const credit = screen.getByRole("link", { name: /designed & built by jainam gondaliya/i });
     expect(credit).toHaveAttribute("target", "_blank");
     expect(credit).toHaveAttribute("rel", expect.stringContaining("noopener"));
-    expect(screen.getByText(/Kairo is a concept brand\. Images are AI concept visuals\./)).toBeInTheDocument();
+    expect(
+      screen.getByText(/Kairo is a concept brand\. Images are AI concept visuals\./),
+    ).toBeInTheDocument();
   });
 });

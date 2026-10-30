@@ -7,6 +7,7 @@ import { BagIcon, HeartIcon, SearchIcon, UserIcon } from "@/components/ui/icons"
 import { cn } from "@/lib/cn";
 import { cartCount, useCart } from "@/stores/cart";
 import { useUi } from "@/stores/ui";
+import { useWishlist } from "@/stores/wishlist";
 import { Wordmark } from "./Logo";
 import { MegaMenu } from "./MegaMenu";
 import { MobileMenu } from "./MobileMenu";
@@ -29,6 +30,8 @@ export function Header() {
   const overHero = useUi((s) => s.heroCount > 0);
   const setCartOpen = useUi((s) => s.setCartOpen);
   const count = useCart((s) => cartCount(s.lines));
+  const saved = useWishlist((s) => s.slugs.length);
+  const signedIn = useUi((s) => s.signedIn);
   const [scrolled, setScrolled] = useState(false);
   const [hidden, setHidden] = useState(false);
   const ref = useRef<HTMLElement>(null);
@@ -40,7 +43,9 @@ export function Header() {
       cancelAnimationFrame(frame);
       frame = requestAnimationFrame(() => {
         const y = window.scrollY;
-        const busy = ref.current?.contains(document.activeElement) || ref.current?.querySelector("[aria-expanded=true]");
+        const busy =
+          ref.current?.contains(document.activeElement) ||
+          ref.current?.querySelector("[aria-expanded=true]");
         setScrolled(y > SOLID_AFTER);
         if (busy || y < HIDE_AFTER) setHidden(false);
         else if (Math.abs(y - lastY) > 6) setHidden(y > lastY);
@@ -63,13 +68,15 @@ export function Header() {
       onFocusCapture={() => setHidden(false)}
       className={cn(
         "sticky top-0 z-50 h-(--header-h) border-b transition-[transform,background-color,border-color] duration-300 ease-ui",
-        transparent ? "border-transparent bg-transparent" : "border-border bg-background/85 backdrop-blur-xl",
+        transparent
+          ? "border-transparent bg-transparent"
+          : "border-border bg-background/85 backdrop-blur-xl",
         hidden && "-translate-y-full",
       )}
     >
       <a
         href="#main"
-        className="sr-only z-10 bg-foreground px-4 py-3 font-mono text-caption01 uppercase text-background focus:not-sr-only focus:absolute focus:left-gutter focus:top-2"
+        className="sr-only z-10 bg-foreground px-4 py-3 font-mono text-caption01 text-background uppercase focus:not-sr-only focus:absolute focus:top-2 focus:left-gutter"
       >
         Skip to content
       </a>
@@ -94,22 +101,58 @@ export function Header() {
         </div>
 
         {/* centre */}
-        <Link href="/" aria-label="KAIRO home" className="flex h-11 items-center px-2 text-heading03 sm:text-heading02">
+        <Link
+          href="/"
+          aria-label="KAIRO home"
+          className="flex h-11 items-center px-2 text-heading03 sm:text-heading02"
+        >
           <Wordmark />
         </Link>
 
         {/* right */}
         <div className="flex items-center justify-end gap-0.5 sm:gap-1">
-          <Link href="/search" aria-label="Search" className={cn(iconLink, "hidden sm:inline-flex")}>
+          <Link
+            href="/search"
+            aria-label="Search"
+            className={cn(iconLink, "hidden sm:inline-flex")}
+          >
             <SearchIcon />
           </Link>
-          <Link href="/wishlist" aria-label="Wishlist" className={cn(iconLink, "hidden sm:inline-flex")}>
-            <HeartIcon />
+          <Link
+            href="/wishlist"
+            aria-label={saved ? `Wishlist (${saved})` : "Wishlist"}
+            className={cn(iconLink, "relative hidden sm:inline-flex")}
+          >
+            <HeartIcon filled={saved > 0} />
+            {saved > 0 && (
+              <span
+                aria-hidden="true"
+                className="absolute top-1 right-1 flex min-w-4 items-center justify-center rounded-pill bg-accent px-1 font-mono text-[10px] leading-4 text-accent-foreground"
+              >
+                {saved > 9 ? "9+" : saved}
+              </span>
+            )}
           </Link>
-          <Link href="/account" aria-label="Account" className={cn(iconLink, "hidden lg:inline-flex")}>
+          <Link
+            href={signedIn ? "/account" : "/login"}
+            aria-label={signedIn ? "Your account" : "Sign in"}
+            className={cn(iconLink, "relative hidden lg:inline-flex")}
+          >
             <UserIcon />
+            {signedIn && (
+              <span
+                aria-hidden="true"
+                className="absolute right-2.5 bottom-2.5 size-1.5 rounded-full bg-accent"
+              />
+            )}
           </Link>
-          <IconButton label="Open bag" icon={<BagIcon />} count={count} onClick={() => setCartOpen(true)} className="-mr-2.5" />
+          <IconButton
+            label="Open bag"
+            icon={<BagIcon />}
+            count={count}
+            onClick={() => setCartOpen(true)}
+            className="-mr-2.5"
+          />
         </div>
       </div>
     </header>

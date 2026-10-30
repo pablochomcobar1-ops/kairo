@@ -303,6 +303,8 @@ LCP under 2.5 s on a mid-range phone on 4G · CLS under 0.05 · INP under 200 ms
 - [ ] **Step 3:** Guest wishlist in `localStorage`, merged into `wishlist_items` on login.
 - [ ] **Step 4:** Commit "Task 8: auth".
 
+**As built (2026-10-30):** Next.js 16 renamed middleware to `src/proxy.ts`. Account pages live in `src/app/(store)/(account)/` so they keep the header and footer. Session cookies are set httpOnly + SameSite=Lax (+ Secure on HTTPS) on every write; nothing in the browser reads them, so "am I signed in?" is a small server action (`syncWishlist`) that also merges the guest wishlist. Rate limits talk to Upstash's REST API directly (no package), with IPs hashed; in production without Upstash keys the limited forms switch off rather than run unprotected. Turnstile is on sign-up now (contact and reviews when they're built). Form actions return what was typed (never passwords) because React 19 empties a form after each submit. Components that read the current path do it through `RouteWatcher` inside its own `<Suspense>`, which pages with unknown params (an order) require. Stage 5 note: the CSP must allow `challenges.cloudflare.com` for Turnstile.
+
 ### Task 9: Checkout, Razorpay, orders, emails, tracking
 
 **Files:** Create: `src/lib/{pricing,coupons,razorpay}.ts`, `src/server/actions/checkout.ts`, `src/app/api/razorpay/webhook/route.ts`, `src/app/(store)/{checkout,checkout/success,track}/page.tsx`, `src/server/email/{orderConfirmation,contactNotice}.tsx`, `tests/unit/{pricing,coupons,razorpay,checkout}.test.ts`

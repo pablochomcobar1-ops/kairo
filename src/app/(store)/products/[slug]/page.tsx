@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Suspense } from "react";
+import { WishlistButton } from "@/components/account/WishlistButton";
 import { CompleteTheLook } from "@/components/home/CompleteTheLook";
 import { Breadcrumbs, jsonLdString } from "@/components/layout/Breadcrumbs";
 import { CollectionLink } from "@/components/layout/CollectionLink";
@@ -99,7 +100,15 @@ async function Product({ params }: Pick<Props, "params">) {
                 >
                   {collection.number} · {collection.name}
                 </CollectionLink>
-                <h1 className="font-display text-heading01 leading-tight font-bold">{p.name}</h1>
+                <div className="flex items-start justify-between gap-4">
+                  <h1 className="font-display text-heading01 leading-tight font-bold">{p.name}</h1>
+                  <WishlistButton
+                    slug={p.slug}
+                    name={p.name}
+                    size={22}
+                    className="-mt-1 -mr-2 shrink-0"
+                  />
+                </div>
                 <div className="flex flex-wrap items-center gap-x-5 gap-y-2">
                   <Price
                     paise={p.pricePaise}

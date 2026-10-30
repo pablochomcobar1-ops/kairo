@@ -10,6 +10,7 @@ import { Badge } from "@/components/ui/Badge";
 import { Price } from "@/components/ui/Price";
 import { ProductArt } from "./ProductArt";
 import { QuickView } from "./QuickView";
+import { WishlistButton } from "@/components/account/WishlistButton";
 
 const LOW_STOCK = 5;
 
@@ -121,6 +122,11 @@ export function ProductCard({
             )}
           </div>
         </motion.div>
+        <WishlistButton
+          slug={product.slug}
+          name={product.name}
+          className="absolute top-1.5 right-1.5 z-10 text-foreground"
+        />
         {quickView && (
           <QuickView
             slug={product.slug}

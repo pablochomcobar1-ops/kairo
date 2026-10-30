@@ -203,7 +203,11 @@ async function Product({ params }: Pick<Props, "params">) {
 
       <div className="px-gutter">
         <div className="mx-auto max-w-site">
-          <ProductReviews reviews={p.reviews} rating={p.rating} />
+          <ProductReviews
+            reviews={p.reviews}
+            rating={p.rating}
+            product={{ slug: p.slug, name: p.name }}
+          />
         </div>
       </div>
     </>

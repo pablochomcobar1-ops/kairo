@@ -100,6 +100,7 @@ function reviewsFor(p: SeedProduct, index: number): ReviewData[] {
       isSample: true,
       isVerified: false,
       createdAt: new Date(BASE - (i + 1) * 9 * 86_400_000).toISOString(),
+      photos: [],
     };
   });
 }

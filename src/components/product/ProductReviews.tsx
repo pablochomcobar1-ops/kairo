@@ -1,5 +1,6 @@
 import type { ReviewData } from "@/server/catalog/types";
 import { Badge } from "@/components/ui/Badge";
+import { ReviewForm } from "./ReviewForm";
 import { Stars } from "./Stars";
 
 const date = (iso: string) =>
@@ -14,9 +15,11 @@ const date = (iso: string) =>
 export function ProductReviews({
   reviews,
   rating,
+  product,
 }: {
   reviews: ReviewData[];
   rating: { average: number; count: number };
+  product: { slug: string; name: string };
 }) {
   const allSamples = reviews.length > 0 && reviews.every((r) => r.isSample);
   const levels = [5, 4, 3, 2, 1].map((n) => ({
@@ -78,27 +81,54 @@ export function ProductReviews({
           )}
         </div>
 
-        {reviews.length > 0 && (
-          <ul className="flex flex-col divide-y divide-border">
-            {reviews.slice(0, 8).map((r) => (
-              <li key={r.id} className="flex flex-col gap-3 py-6 first:pt-0">
-                <div className="flex flex-wrap items-center gap-3">
-                  <Stars rating={r.rating} size={14} />
-                  {r.isVerified ? (
-                    <Badge tone="verified">Verified buyer</Badge>
-                  ) : r.isSample ? (
-                    <Badge tone="sample">Sample</Badge>
-                  ) : null}
-                </div>
-                <p className="text-body01 font-semibold">{r.title}</p>
-                <p className="max-w-prose text-body02 text-foreground-secondary">{r.body}</p>
-                <p className="font-mono text-caption02 tracking-[0.12em] text-foreground-subtle uppercase">
-                  {r.author} · <time dateTime={r.createdAt}>{date(r.createdAt)}</time>
-                </p>
-              </li>
-            ))}
-          </ul>
-        )}
+        <div className="flex flex-col gap-10">
+          <div>
+            <ReviewForm productSlug={product.slug} productName={product.name} />
+          </div>
+          {reviews.length > 0 && (
+            <ul className="flex flex-col divide-y divide-border">
+              {reviews.slice(0, 8).map((r) => (
+                <li key={r.id} className="flex flex-col gap-3 py-6 first:pt-0">
+                  <div className="flex flex-wrap items-center gap-3">
+                    <Stars rating={r.rating} size={14} />
+                    {r.isVerified ? (
+                      <Badge tone="verified">Verified buyer</Badge>
+                    ) : r.isSample ? (
+                      <Badge tone="sample">Sample</Badge>
+                    ) : null}
+                  </div>
+                  <p className="text-body01 font-semibold">{r.title}</p>
+                  <p className="max-w-prose text-body02 text-foreground-secondary">{r.body}</p>
+                  {r.photos.length > 0 && (
+                    <ul className="flex flex-wrap gap-2" aria-label={`Photos from ${r.author}`}>
+                      {r.photos.map((src, i) => (
+                        <li key={src}>
+                          <a
+                            href={src}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="block size-20 overflow-hidden border border-border transition-opacity hover:opacity-80"
+                          >
+                            {/* eslint-disable-next-line @next/next/no-img-element -- short-lived signed links can't go through the image optimiser cache */}
+                            <img
+                              src={src}
+                              alt={`Photo ${i + 1} from ${r.author}'s review (opens full size)`}
+                              loading="lazy"
+                              className="size-full object-cover"
+                            />
+                          </a>
+                        </li>
+                      ))}
+                    </ul>
+                  )}
+                  <p className="font-mono text-caption02 tracking-[0.12em] text-foreground-subtle uppercase">
+                    {r.author} · <time dateTime={r.createdAt}>{date(r.createdAt)}</time>
+                  </p>
+                </li>
+              ))}
+            </ul>
+          )}
+        </div>
       </div>
     </section>
   );

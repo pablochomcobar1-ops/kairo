@@ -75,6 +75,6 @@ npm run build      # production build
 
 Copy `.env.example` to `.env.local` when a task asks for keys. Never commit `.env.local`.
 
-**Test payment:** Razorpay test card `4111 1111 1111 1111`, any future expiry, any CVV; or UPI ID `success@razorpay`. No real money moves.
+**Test payment:** Razorpay test card `5104 0600 0000 0008` (Mastercard) or `4718 6091 0820 4366` (Visa), any future expiry, any CVV, and any 4–10 digit OTP. No real money moves.
 
 No database handy? `KAIRO_DATA=fixtures npm run dev` reads the products straight from `supabase/seed/catalog.mjs` (the GitHub checks do this). Forms then pretend to save.

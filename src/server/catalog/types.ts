@@ -77,6 +77,8 @@ export interface CatalogProduct extends ProductCardData {
 export interface ReviewData extends ReviewSnippet {
   /** ISO date */
   createdAt: string;
+  /** signed links to the reviewer's photos (the photo bucket is private) */
+  photos: string[];
 }
 
 export interface ProductDetail extends ProductCardData {

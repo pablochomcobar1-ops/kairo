@@ -1,5 +1,6 @@
 import "server-only";
 import { createPublicClient } from "@/server/supabase/public";
+import { signedReviewPhotos } from "@/server/reviews/store";
 import { FEATURED_LOOK_SLUG } from "./featured";
 import { buildSearchText } from "./search-text";
 import type {
@@ -240,7 +241,9 @@ export const supabaseSource: CatalogSource = {
         .order("position"),
       db
         .from("reviews")
-        .select("id, author_name, rating, title, body, is_sample, is_verified, created_at")
+        .select(
+          "id, author_name, rating, title, body, is_sample, is_verified, created_at, photo_paths",
+        )
         .eq("product_id", row.id)
         .eq("status", "approved")
         .order("created_at", { ascending: false })
@@ -254,6 +257,9 @@ export const supabaseSource: CatalogSource = {
     const lookRows = pairs.filter((p) => p.kind === "look").map((p) => p.paired as PieceRow);
     const other = pairs.find((p) => p.kind === "another_way")?.paired ?? null;
 
+    const signed = await signedReviewPhotos(
+      (reviews.data ?? []).flatMap((r) => r.photo_paths ?? []),
+    );
     const reviewList: ReviewData[] = (reviews.data ?? []).map((r) => ({
       id: r.id,
       productSlug: row.slug,
@@ -265,6 +271,7 @@ export const supabaseSource: CatalogSource = {
       isSample: r.is_sample,
       isVerified: r.is_verified,
       createdAt: r.created_at,
+      photos: (r.photo_paths ?? []).flatMap((path) => signed.get(path) ?? []),
     }));
     const total = reviewList.reduce((n, r) => n + r.rating, 0);
 

@@ -5,7 +5,7 @@ import { AnimatePresence, motion } from "motion/react";
 import { useReducedMotion } from "@/components/motion/useReducedMotion";
 import { useEffect, useId, useMemo, useRef, useState, type CSSProperties } from "react";
 import type { LookPiece } from "@/server/catalog/types";
-import { ProductArt } from "@/components/product/ProductArt";
+import { Visual } from "@/components/product/ProductCard";
 import { Button } from "@/components/ui/Button";
 import { Dialog } from "@/components/ui/Dialog";
 import { Select } from "@/components/ui/Field";
@@ -147,8 +147,8 @@ export function CompleteTheLook({
                 viewport={{ once: true, margin: "-15%" }}
                 transition={{ duration: 1.1, delay: 0.12 * i, ease: [0.16, 1, 0.3, 1] }}
               >
-                <div className="aspect-[3/4]">
-                  <ProductArt name={piece.product.name} collection={piece.product.collection} />
+                <div className="relative aspect-[3/4]">
+                  <Visual product={piece.product} view={0} />
                 </div>
               </motion.div>
             );

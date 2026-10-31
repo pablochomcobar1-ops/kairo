@@ -85,7 +85,7 @@ export default async function DropsPage() {
                       </div>
                       <ul className="grid grid-cols-4 gap-2 self-center" aria-hidden="true">
                         {d.products.slice(0, 4).map((p) => (
-                          <li key={p.slug} className="aspect-[3/4] overflow-hidden">
+                          <li key={p.slug} className="relative aspect-[3/4] overflow-hidden">
                             <Visual product={p} view={0} />
                           </li>
                         ))}

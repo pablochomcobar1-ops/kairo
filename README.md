@@ -13,7 +13,7 @@ Designed and built by **Jainam Gondaliya**. Kairo is a concept brand; product im
 | 1 | Brief, positioning, site architecture | Done |
 | 2 | Visual direction (A: Noir Atelier) + design tokens | Done |
 | 3 | Build plan | Done |
-| 4 | Build | Tasks 0–12 done |
+| 4 | Build | Tasks 0–13 done (photos: run the shoot) |
 | 5 | Security hardening | Not started |
 | 6 | QA, SEO, accessibility, performance | Not started |
 | 7 | Launch on Vercel | Not started |
@@ -54,6 +54,8 @@ src/server/contact/           Contact messages
 src/app/admin/                Admin panel: orders, products, reviews, messages
 src/server/admin/             What the admin pages read (with the admin's own session)
 src/server/actions/admin.ts   Admin actions, each re-checking that you are an admin
+scripts/photos.mjs            Imports the photo shoot (npm run photos)
+scripts/lib/photos.mjs        Shoot prompts per collection, import rules
 src/stores/                   Bag (saved in the browser) and site UI state
 src/components/ui/            Buttons, fields, dialogs, drawers, prices, badges, icons
 src/components/motion/        Reveal, SplitText, MagneticButton, SmoothScroll (Lenis + GSAP)
@@ -81,6 +83,14 @@ npm run build      # production build
 Copy `.env.example` to `.env.local` when a task asks for keys. Never commit `.env.local`.
 
 **Test payment:** Razorpay test card `5104 0600 0000 0008` (Mastercard) or `4718 6091 0820 4366` (Visa), any future expiry, any CVV, and any 4–10 digit OTP. No real money moves.
+
+## Product photos
+
+AI concept photos, male models only. Every prompt is in [docs/photo-shoot.md](docs/photo-shoot.md) (rebuilt from the catalog with `npm run photos:prompts`).
+
+1. Save each picture as `photos/<product>/1.jpg` (worn) or `2.jpg` (close-up). The `photos` folder stays on your PC.
+2. `npm run photos -- --check` checks the folder; `npm run photos` crops to 3:4, compresses to AVIF, uploads to Supabase and links each product to its photos.
+3. Set `NEXT_PUBLIC_PRODUCT_PHOTOS=1` in `.env.local` and restart. Pieces without a photo keep their drawing.
 
 ## Admin panel
 

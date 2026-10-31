@@ -33,3 +33,6 @@ coverage/
 # Supabase CLI local state
 supabase/.temp/
 supabase/.branches/
+
+# the photo shoot's source files (only the processed photos go to Supabase)
+/photos/

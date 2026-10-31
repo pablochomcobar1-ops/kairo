@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { motion, useSpring } from "motion/react";
 import { useReducedMotion } from "@/components/motion/useReducedMotion";
@@ -20,13 +21,12 @@ export function Visual({ product, view }: { product: ProductCardData; view: 0 | 
   const src = productImageUrl(product.images[view]?.path);
   if (src) {
     return (
-      // eslint-disable-next-line @next/next/no-img-element -- next/image arrives with real photos in Task 13
-      <img
+      <Image
         src={src}
-        alt={product.images[view]?.alt ?? product.name}
-        loading="lazy"
-        decoding="async"
-        className="size-full object-cover"
+        alt={view === 0 ? (product.images[0]?.alt ?? product.name) : ""}
+        fill
+        sizes="(max-width: 768px) 50vw, (max-width: 1280px) 33vw, 25vw"
+        className="object-cover"
       />
     );
   }

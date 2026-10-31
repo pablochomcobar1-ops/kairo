@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import {
@@ -480,10 +481,9 @@ export function CheckoutClient() {
           {(q?.lines ?? []).map((l) => (
             <li key={l.variantId} className="flex gap-4 py-4 first:pt-0">
               <div className="w-14 shrink-0 overflow-hidden bg-background-tertiary">
-                <div className="aspect-[3/4]">
+                <div className="relative aspect-[3/4]">
                   {l.image ? (
-                    // eslint-disable-next-line @next/next/no-img-element -- next/image arrives with real photos in Task 13
-                    <img src={l.image} alt="" className="size-full object-cover" />
+                    <Image src={l.image} alt="" fill sizes="56px" className="object-cover" />
                   ) : (
                     <ProductArt name={l.name} collection="" />
                   )}

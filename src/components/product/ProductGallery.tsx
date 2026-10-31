@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { useRef, useState, type PointerEvent } from "react";
 import type { ProductImage } from "@/server/catalog/types";
 import { cn } from "@/lib/cn";
@@ -40,19 +41,18 @@ function Frame({
       <div
         ref={inner}
         className={cn(
-          "size-full transition-transform duration-300 ease-out motion-reduce:transition-none",
+          "relative size-full transition-transform duration-300 ease-out motion-reduce:transition-none",
           zoom && "scale-[1.9] motion-reduce:scale-100",
         )}
       >
         {src ? (
-          // eslint-disable-next-line @next/next/no-img-element -- next/image arrives with real photos in Task 13
-          <img
+          <Image
             src={src}
             alt={image?.alt ?? name}
-            className="size-full object-cover"
-            loading={priority ? "eager" : "lazy"}
-            fetchPriority={priority ? "high" : "auto"}
-            decoding="async"
+            fill
+            sizes="(max-width: 768px) 100vw, 50vw"
+            preload={priority}
+            className="object-cover"
           />
         ) : (
           <ProductArt name={name} collection={collection} view={view} />

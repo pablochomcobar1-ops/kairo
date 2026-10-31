@@ -95,3 +95,19 @@ ${line("Subtotal", formatINR(o.subtotal))}${o.discount ? line("Discount", "−" 
 
   return { to: o.email, subject: `Your Kairo order ${o.number}`, html, text };
 }
+
+/** "Your order is on its way": sent when an admin marks an order shipped. */
+export function orderShippedEmail(o: { number: string; email: string; name: string }) {
+  const track = `${publicSiteUrl()}/track?order=${encodeURIComponent(o.number)}`;
+  const first = escapeHtml(o.name.split(" ")[0] || "there");
+  const html = `<!doctype html><html><body style="margin:0;background:#0B0B0C;color:#ECE6DA;font-family:Helvetica,Arial,sans-serif">
+<div style="max-width:560px;margin:0 auto;padding:40px 24px">
+<p style="letter-spacing:0.4em;font-weight:bold;font-size:20px;margin:0 0 32px">KAIRO</p>
+<h1 style="font-size:24px;margin:0 0 8px">It's on its way, ${first}.</h1>
+<p style="color:#A39D93;margin:0 0 24px">Order <strong style="color:#C9A66B;font-family:monospace">${escapeHtml(o.number)}</strong> has shipped and should reach you in 2–4 working days.</p>
+<p style="margin:32px 0"><a href="${track}" style="background:#ECE6DA;color:#0B0B0C;padding:14px 24px;text-decoration:none;letter-spacing:0.14em;font-size:13px">TRACK YOUR ORDER</a></p>
+<p style="color:#8C877E;font-size:12px">Kairo is a concept store by Jainam Gondaliya. Nothing is really shipped.</p>
+</div></body></html>`;
+  const text = `Order ${o.number} has shipped and should reach you in 2–4 working days.\nTrack it: ${track}\n\nKairo is a concept store. Nothing is really shipped.`;
+  return { to: o.email, subject: `Your Kairo order ${o.number} has shipped`, html, text };
+}

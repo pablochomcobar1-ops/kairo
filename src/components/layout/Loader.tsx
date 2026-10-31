@@ -24,4 +24,4 @@ export const INTRO_EVERY_MS = 12 * 60 * 60 * 1000;
  * sees the intro flash, including in new tabs. If storage is blocked, the intro
  * is skipped rather than replayed on every page. Stage 5 adds a CSP nonce to it.
  */
-export const INTRO_SCRIPT = `try{var k="kairo-intro",n=Date.now(),t=+localStorage.getItem(k)||0;if(n-t<${INTRO_EVERY_MS}){document.documentElement.classList.add("intro-seen")}else{localStorage.setItem(k,String(n))}}catch(e){document.documentElement.classList.add("intro-seen")}`;
+export const INTRO_SCRIPT = `try{var k="kairo-intro",n=Date.now(),t=+localStorage.getItem(k)||0;if(location.pathname.indexOf("/admin")===0||n-t<${INTRO_EVERY_MS}){document.documentElement.classList.add("intro-seen")}else{localStorage.setItem(k,String(n))}}catch(e){document.documentElement.classList.add("intro-seen")}`;

@@ -361,3 +361,101 @@ describe("constraints", () => {
     ).rejects.toThrow(/check constraint/);
   });
 });
+
+describe("admin order actions", () => {
+  const paidOrder = async (slug: string, qty: number, pay: string) => {
+    const v = await firstVariant(slug);
+    const o = await createOrder(ALICE, v.id, qty);
+    await t.as("service_role", null, (d) =>
+      d.query("select public.mark_order_paid($1, $2)", [o.id, pay]),
+    );
+    return { o, v };
+  };
+  const stockOf = async (id: string) =>
+    (await t.db.query<{ stock: number }>("select stock from public.variants where id = $1", [id]))
+      .rows[0].stock;
+
+  it("cancelling a paid order puts the stock back and flags a refund, with the reason logged", async () => {
+    const { o, v } = await paidOrder("heirloom-overshirt", 2, "pay_a1");
+    expect(await stockOf(v.id)).toBe(v.stock - 2);
+    const r = await t.as("authenticated", ADMIN, (d) =>
+      d.query<{ r: string }>("select public.admin_cancel_order($1, 'Customer asked to cancel') r", [
+        o.id,
+      ]),
+    );
+    expect(r.rows[0].r).toBe("cancelled");
+    expect(await stockOf(v.id)).toBe(v.stock);
+    const order = await t.db.query<{ status: string; payment_status: string }>(
+      "select status, payment_status from public.orders where id = $1",
+      [o.id],
+    );
+    expect(order.rows[0]).toEqual({ status: "cancelled", payment_status: "refund_due" });
+    const ev = await t.db.query<{ note: string }>(
+      "select note from public.order_events where order_id = $1 and status = 'cancelled'",
+      [o.id],
+    );
+    expect(ev.rows[0].note).toBe("Customer asked to cancel");
+
+    // a second cancel changes nothing
+    const again = await t.as("authenticated", ADMIN, (d) =>
+      d.query<{ r: string }>("select public.admin_cancel_order($1, null) r", [o.id]),
+    );
+    expect(again.rows[0].r).toBe("not_allowed");
+    expect(await stockOf(v.id)).toBe(v.stock);
+
+    // then the refund is recorded once
+    const refund = () =>
+      t.as("authenticated", ADMIN, (d) =>
+        d.query<{ r: string }>("select public.admin_mark_refunded($1) r", [o.id]),
+      );
+    expect((await refund()).rows[0].r).toBe("refunded");
+    expect((await refund()).rows[0].r).toBe("not_allowed");
+  });
+
+  it("a shipped order can't be cancelled", async () => {
+    const { o } = await paidOrder("linen-weekend-trouser", 1, "pay_a2");
+    await t.as("authenticated", ADMIN, async (d) => {
+      await d.query("update public.orders set status = 'packed' where id = $1", [o.id]);
+      await d.query("update public.orders set status = 'shipped' where id = $1", [o.id]);
+    });
+    const r = await t.as("authenticated", ADMIN, (d) =>
+      d.query<{ r: string }>("select public.admin_cancel_order($1, null) r", [o.id]),
+    );
+    expect(r.rows[0].r).toBe("not_allowed");
+  });
+
+  it("shoppers and visitors can't use the admin functions", async () => {
+    const { o } = await paidOrder("riviera-camp-shirt", 1, "pay_a3");
+    await expect(
+      t.as("authenticated", ALICE, (d) =>
+        d.query("select public.admin_cancel_order($1, null)", [o.id]),
+      ),
+    ).rejects.toThrow(/admins only/);
+    await expect(
+      t.as("authenticated", BOB, (d) => d.query("select public.admin_clear_abandoned(1)")),
+    ).rejects.toThrow(/admins only/);
+    await expect(
+      t.as("anon", null, (d) => d.query("select public.admin_mark_refunded($1)", [o.id])),
+    ).rejects.toThrow(/permission denied/);
+  });
+
+  it("clears only unpaid checkouts older than the cut-off", async () => {
+    const v = await firstVariant("pleated-chino");
+    const old = await createOrder(BOB, v.id, 1);
+    const fresh = await createOrder(BOB, v.id, 1);
+    const { o: paid } = await paidOrder("cable-knit-polo", 1, "pay_a4");
+    await t.db.query(
+      "update public.orders set created_at = now() - interval '30 hours' where id = any($1)",
+      [[old.id, paid.id]],
+    );
+    const n = await t.as("authenticated", ADMIN, (d) =>
+      d.query<{ n: number }>("select public.admin_clear_abandoned(24) n"),
+    );
+    expect(n.rows[0].n).toBeGreaterThanOrEqual(1);
+    const left = await t.db.query<{ id: string }>(
+      "select id from public.orders where id = any($1)",
+      [[old.id, fresh.id, paid.id]],
+    );
+    expect(left.rows.map((r) => r.id).sort()).toEqual([fresh.id, paid.id].sort());
+  });
+});

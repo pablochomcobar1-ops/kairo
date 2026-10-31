@@ -18,6 +18,17 @@ describe("intro script", () => {
     expect(seen()).toBe(false);
   });
 
+  it("never plays in the admin panel, and doesn't use up the shop's intro", () => {
+    window.history.pushState({}, "", "/admin/orders");
+    try {
+      run();
+      expect(seen()).toBe(true);
+      expect(localStorage.getItem("kairo-intro")).toBeNull();
+    } finally {
+      window.history.pushState({}, "", "/");
+    }
+  });
+
   it("is skipped on the next page, in any tab, within 12 hours", () => {
     run();
     document.documentElement.classList.remove("intro-seen");

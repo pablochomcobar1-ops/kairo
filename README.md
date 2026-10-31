@@ -13,7 +13,7 @@ Designed and built by **Jainam Gondaliya**. Kairo is a concept brand; product im
 | 1 | Brief, positioning, site architecture | Done |
 | 2 | Visual direction (A: Noir Atelier) + design tokens | Done |
 | 3 | Build plan | Done |
-| 4 | Build | Tasks 0–9 done |
+| 4 | Build | Tasks 0–12 done |
 | 5 | Security hardening | Not started |
 | 6 | QA, SEO, accessibility, performance | Not started |
 | 7 | Launch on Vercel | Not started |
@@ -49,6 +49,11 @@ src/app/api/razorpay/webhook/ Razorpay → Kairo payment notifications (signatur
 src/server/email.ts           Order emails through Resend
 src/server/catalog/           Reads the catalog: Supabase, or the catalog file when KAIRO_DATA=fixtures
 src/server/actions/           Server Actions (form posts), e.g. drop alerts
+src/server/reviews/           Reviews: checks, verified buyer, private photo storage
+src/server/contact/           Contact messages
+src/app/admin/                Admin panel: orders, products, reviews, messages
+src/server/admin/             What the admin pages read (with the admin's own session)
+src/server/actions/admin.ts   Admin actions, each re-checking that you are an admin
 src/stores/                   Bag (saved in the browser) and site UI state
 src/components/ui/            Buttons, fields, dialogs, drawers, prices, badges, icons
 src/components/motion/        Reveal, SplitText, MagneticButton, SmoothScroll (Lenis + GSAP)
@@ -76,5 +81,16 @@ npm run build      # production build
 Copy `.env.example` to `.env.local` when a task asks for keys. Never commit `.env.local`.
 
 **Test payment:** Razorpay test card `5104 0600 0000 0008` (Mastercard) or `4718 6091 0820 4366` (Visa), any future expiry, any CVV, and any 4–10 digit OTP. No real money moves.
+
+## Admin panel
+
+Open `/admin` while signed in as an admin. To make your own account the admin, sign up on the site first, then run this once in Supabase → **SQL Editor** (with your email):
+
+```sql
+update public.profiles set role = 'admin'
+where id = (select id from auth.users where email = 'you@example.com');
+```
+
+Sign out and back in afterwards. Shoppers can never give themselves this role (the database refuses).
 
 No database handy? `KAIRO_DATA=fixtures npm run dev` reads the products straight from `supabase/seed/catalog.mjs` (the GitHub checks do this). Forms then pretend to save.

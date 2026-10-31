@@ -693,6 +693,13 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      admin_cancel_order: {
+        Args: { p_note: string | null; p_order_id: string }
+        Returns: string
+      }
+      admin_clear_abandoned: { Args: { p_hours?: number }; Returns: number }
+      admin_mark_refunded: { Args: { p_order_id: string }; Returns: string }
+      assert_admin: { Args: never; Returns: undefined }
       generate_order_number: { Args: never; Returns: string }
       is_admin: { Args: never; Returns: boolean }
       is_verified_buyer: {

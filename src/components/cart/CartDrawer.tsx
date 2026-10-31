@@ -1,6 +1,7 @@
 "use client";
 
-import { AnimatePresence, motion, useReducedMotion } from "motion/react";
+import { AnimatePresence, motion } from "motion/react";
+import { useReducedMotion } from "@/components/motion/useReducedMotion";
 import Link from "next/link";
 import { useCallback, useEffect, useRef } from "react";
 import { CollectionLink } from "@/components/layout/CollectionLink";

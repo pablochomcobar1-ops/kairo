@@ -1,6 +1,7 @@
 "use client";
 
-import { AnimatePresence, motion, useReducedMotion } from "motion/react";
+import { AnimatePresence, motion } from "motion/react";
+import { useReducedMotion } from "@/components/motion/useReducedMotion";
 import { useActionState, useId } from "react";
 import { joinDropAlerts, type DropAlertState } from "@/server/actions/dropAlerts";
 import { cn } from "@/lib/cn";

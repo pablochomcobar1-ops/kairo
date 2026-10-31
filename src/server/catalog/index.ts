@@ -2,7 +2,7 @@ import "server-only";
 import { cacheLife, cacheTag } from "next/cache";
 import { fixturesSource } from "./fixtures";
 import { supabaseSource } from "./supabase";
-import type { CatalogProduct, CatalogSource, HomeData, ProductDetail } from "./types";
+import type { CatalogProduct, CatalogSource, DropData, HomeData, ProductDetail } from "./types";
 
 export type * from "./types";
 
@@ -45,4 +45,17 @@ export async function getProduct(slug: string): Promise<ProductDetail | null> {
   cacheTag(CATALOG_TAG, `product:${slug}`);
   if (!SLUG.test(slug) || slug.length > 120) return null;
   return source().getProduct(slug);
+}
+
+/** Every drop, newest first, with its pieces. */
+export async function getDrops(): Promise<DropData[]> {
+  "use cache";
+  cacheLife("hours");
+  cacheTag(CATALOG_TAG);
+  return source().getDrops();
+}
+
+export async function getDrop(slug: string): Promise<DropData | null> {
+  if (!SLUG.test(slug) || slug.length > 120) return null;
+  return (await getDrops()).find((d) => d.slug === slug) ?? null;
 }

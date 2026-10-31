@@ -1,7 +1,8 @@
 "use client";
 
 import Link from "next/link";
-import { AnimatePresence, motion, useReducedMotion } from "motion/react";
+import { AnimatePresence, motion } from "motion/react";
+import { useReducedMotion } from "@/components/motion/useReducedMotion";
 import { useEffect, useId, useMemo, useRef, useState, type CSSProperties } from "react";
 import type { LookPiece } from "@/server/catalog/types";
 import { ProductArt } from "@/components/product/ProductArt";
@@ -121,7 +122,7 @@ export function CompleteTheLook({
   return (
     <section
       data-theme={theme}
-      aria-labelledby="look-title"
+      aria-labelledby={`${uid}-title`}
       className="bg-background py-section text-foreground"
     >
       <div className="mx-auto grid max-w-site gap-12 px-gutter lg:grid-cols-[1fr_22rem] lg:items-end">
@@ -232,7 +233,7 @@ export function CompleteTheLook({
               {eyebrow}
             </p>
           </Reveal>
-          <div id="look-title">
+          <div id={`${uid}-title`}>
             <SplitText text={title} className="font-display text-heading01 font-bold" />
           </div>
           <Reveal delay={0.1}>

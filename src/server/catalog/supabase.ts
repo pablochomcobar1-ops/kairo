@@ -294,4 +294,29 @@ export const supabaseSource: CatalogSource = {
       },
     };
   },
+
+  async getDrops(): Promise<DropData[]> {
+    const db = createPublicClient();
+    const { data, error } = await db
+      .from("drops")
+      .select(`slug, name, description, starts_at, ends_at, products ( ${CARD_SELECT} )`)
+      .order("starts_at", { ascending: false });
+    if (error) fail("drops", error);
+    type Row = {
+      slug: string;
+      name: string;
+      description: string;
+      starts_at: string;
+      ends_at: string | null;
+      products: CardRow[] | null;
+    };
+    return ((data ?? []) as unknown as Row[]).map((d) => ({
+      slug: d.slug,
+      name: d.name,
+      description: d.description,
+      startsAt: d.starts_at,
+      endsAt: d.ends_at,
+      products: [...(d.products ?? [])].sort((a, b) => a.name.localeCompare(b.name)).map(toCard),
+    }));
+  },
 };

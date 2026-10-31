@@ -1,7 +1,8 @@
 "use client";
 
 import Link from "next/link";
-import { animate, motion, useMotionValue, useReducedMotion, useSpring } from "motion/react";
+import { animate, motion, useMotionValue, useSpring } from "motion/react";
+import { useReducedMotion } from "@/components/motion/useReducedMotion";
 import {
   useCallback,
   useEffect,

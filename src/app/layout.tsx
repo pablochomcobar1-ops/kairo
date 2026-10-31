@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import { CurtainProvider } from "@/components/layout/Curtain";
 import { IntroScript } from "@/components/layout/IntroScript";
 import { Loader } from "@/components/layout/Loader";
+import { MotionSettings } from "@/components/motion/MotionSettings";
 import { SmoothScroll } from "@/components/motion/SmoothScroll";
 import { fontVariables } from "@/lib/fonts";
 import "./globals.css";
@@ -31,9 +32,11 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       </head>
       <body className="grain bg-background text-foreground">
         <Loader />
-        <SmoothScroll>
-          <CurtainProvider>{children}</CurtainProvider>
-        </SmoothScroll>
+        <MotionSettings>
+          <SmoothScroll>
+            <CurtainProvider>{children}</CurtainProvider>
+          </SmoothScroll>
+        </MotionSettings>
       </body>
     </html>
   );

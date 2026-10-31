@@ -1,6 +1,7 @@
 "use client";
 
-import { motion, useReducedMotion, useScroll, useTransform, type MotionValue } from "motion/react";
+import { motion, useScroll, useTransform, type MotionValue } from "motion/react";
+import { useReducedMotion } from "@/components/motion/useReducedMotion";
 import { useEffect, useRef } from "react";
 import { pushTheme } from "@/components/layout/ThemeSignal";
 import { COLLECTIONS, type CollectionInfo } from "@/lib/collections";

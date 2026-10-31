@@ -1,6 +1,7 @@
 "use client";
 
-import { AnimatePresence, motion, useReducedMotion } from "motion/react";
+import { AnimatePresence, motion } from "motion/react";
+import { useReducedMotion } from "@/components/motion/useReducedMotion";
 import { useEffect, useId, useMemo, useRef, useState } from "react";
 import type { ProductCardData, VariantData } from "@/server/catalog/types";
 import { Price } from "@/components/ui/Price";

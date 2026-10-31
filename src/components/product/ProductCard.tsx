@@ -1,7 +1,8 @@
 "use client";
 
 import Link from "next/link";
-import { motion, useReducedMotion, useSpring } from "motion/react";
+import { motion, useSpring } from "motion/react";
+import { useReducedMotion } from "@/components/motion/useReducedMotion";
 import { useEffect, useState, type PointerEvent } from "react";
 import type { ProductCardData } from "@/server/catalog/types";
 import { cn } from "@/lib/cn";
@@ -14,7 +15,8 @@ import { WishlistButton } from "@/components/account/WishlistButton";
 
 const LOW_STOCK = 5;
 
-function Visual({ product, view }: { product: ProductCardData; view: 0 | 1 }) {
+/** The product's photo when photos are on, otherwise its drawn artwork. */
+export function Visual({ product, view }: { product: ProductCardData; view: 0 | 1 }) {
   const src = productImageUrl(product.images[view]?.path);
   if (src) {
     return (
@@ -136,8 +138,9 @@ export function ProductCard({
         )}
       </div>
 
-      <div className="mt-4 flex items-start justify-between gap-4">
-        <h3 className="text-body02 leading-snug font-semibold">
+      {/* on narrow cards a sale price drops under the name instead of pushing out of the card */}
+      <div className="mt-4 flex flex-wrap items-start justify-between gap-x-4 gap-y-1">
+        <h3 className="min-w-0 text-body02 leading-snug font-semibold">
           <Link
             href={`/products/${product.slug}`}
             draggable={false}

@@ -101,4 +101,6 @@ export interface CatalogSource {
   /** every published product */
   getCatalog(): Promise<CatalogProduct[]>;
   getProduct(slug: string): Promise<ProductDetail | null>;
+  /** every drop with its pieces, newest first */
+  getDrops(): Promise<DropData[]>;
 }

@@ -1,6 +1,7 @@
 "use client";
 
-import { AnimatePresence, motion, useReducedMotion } from "motion/react";
+import { AnimatePresence, motion } from "motion/react";
+import { useReducedMotion } from "@/components/motion/useReducedMotion";
 import { useEffect, useState } from "react";
 import { timeLeft, type TimeLeft } from "@/lib/countdown";
 import { cn } from "@/lib/cn";

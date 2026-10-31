@@ -7,6 +7,7 @@ import type {
   CatalogProduct,
   CatalogSource,
   CollectionSlug,
+  DropData,
   HomeData,
   ProductCardData,
   ProductDetail,
@@ -180,5 +181,16 @@ export const fixturesSource: CatalogSource = {
         count: reviews.length,
       },
     };
+  },
+
+  async getDrops(): Promise<DropData[]> {
+    return catalog.drops.map((d) => ({
+      slug: d.slug,
+      name: d.name,
+      description: d.description,
+      startsAt: dropStart(),
+      endsAt: null,
+      products: catalog.products.filter((p) => p.drop === d.slug).map(card),
+    }));
   },
 };
